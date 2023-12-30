@@ -1,41 +1,42 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema
+const Schema = mongoose.Schema;
 
-const UserSchema = new Schema({
-    userId:{
-        type: String
-    },
-    firstName: {
-        type: String,
-        required: true,
-        maxLength: 20
-    },
-    lastName: {
-        type: String,
-        required: true,
-        maxLength: 20
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        maxLength: 30,
-        minLength: 3
-    },
-    phoneNr: {
-        type: String,
-        required: true,
-        unique: true,
-        match: /^(\()?\d{3}(\))?(-|\s)?\d{3}(-|\s)\d{4}$/,
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    createdOn: {
-        type: Date, 
-        default: Date.now()
-    }
-})
+const UserSchema = new Schema(
+	{
+		userId: {
+			type: String,
+		},
+		firstName: {
+			type: String,
+			required: true,
+			maxLength: 20,
+		},
+		lastName: {
+			type: String,
+			required: true,
+			maxLength: 20,
+		},
+		email: {
+			type: String,
+			required: true,
+			unique: true,
+			maxLength: 30,
+			minLength: 3,
+		},
+		phoneNr: {
+			type: String,
+			required: true,
+			unique: true,
+			match: /^(\()?\d{3}(\))?(-|\s)?\d{3}(-|\s)\d{4}$/,
+		},
+		password: {
+			type: String,
+			required: true,
+		},
+	},
+	{
+		timestamps: true,
+	}
+);
 
-module.exports = mongoose.model("User", UserSchema)
+module.exports = mongoose.model("User", UserSchema);
