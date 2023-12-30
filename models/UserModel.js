@@ -33,10 +33,19 @@ const UserSchema = new Schema(
 			type: String,
 			required: true,
 		},
+        isAdmin: {
+            type: Boolean,
+            required: true,
+            default: false
+        }
 	},
 	{
 		timestamps: true,
 	}
 );
+
+UserSchema.methods.matchPassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+  };
 
 module.exports = mongoose.model("User", UserSchema);
