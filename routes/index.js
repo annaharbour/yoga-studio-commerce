@@ -3,6 +3,6 @@ const userRoutes = require('./userRoutes')
 
 const router = Router()
 
-router.use('/', userRoutes)
+router.use('/auth', userRoutes)
 
 module.exports = router

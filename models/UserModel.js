@@ -26,7 +26,6 @@ const UserSchema = new Schema(
 		phoneNr: {
 			type: String,
 			required: true,
-			unique: true,
 			match: /^(\()?\d{3}(\))?(-|\s)?\d{3}(-|\s)\d{4}$/,
 		},
 		password: {

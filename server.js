@@ -1,21 +1,23 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const dotenv = require('dotenv');
-const routes = require('./routes/index')
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const routes = require("./routes/index");
+const cookieParser = require("cookie-parser");
 
-dotenv.config()
-const app = express()
-app.use(express.json())
+dotenv.config();
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
 
-const port = process.env.PORT || 4000
-const mongoURI = process.env.mongoURI
+const port = process.env.PORT || 4000;
+const mongoURI = process.env.mongoURI;
 
-mongoose.connect(mongoURI)
-  .then((result) => {
-    app.use(routes)
-    app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}/`)
-  })})
-  .catch((err) => console.log(err));
-
-
+mongoose
+	.connect(mongoURI)
+	.then((result) => {
+		app.use(routes);
+		app.listen(port, () => {
+			console.log(`Server running at http://localhost:${port}/`);
+		});
+	})
+	.catch((err) => console.log(err));
