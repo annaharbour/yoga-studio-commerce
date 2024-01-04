@@ -1,29 +1,21 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const OrderSchema = new Schema(
+const BookingSchema = new Schema(
 	{
 		userId: {
 			type: mongoose.Schema.Types.ObjectId,
 			required: true,
 			ref: "User",
 		},
-		cart: [
+		bookings: [
 			{
-				productId: {
+				classId: {
 					type: mongoose.Schema.Types.ObjectId,
 					required: true,
-					ref: "Product",
+					ref: "YogaClass",
 				},
 				name: {
-					type: String,
-					required: true,
-				},
-				quantity: {
-					type: Number,
-					required: true,
-				},
-				image: {
 					type: String,
 					required: true,
 				},
@@ -33,7 +25,7 @@ const OrderSchema = new Schema(
 				},
 			},
 		],
-		shippingAddress: {
+		userAddress: {
 			address: { type: String, required: true },
 			city: { type: String, required: true },
 			state: { type: String, required: true },
@@ -49,36 +41,15 @@ const OrderSchema = new Schema(
 			required: true,
 			default: 0.0,
 		},
-		shippingPrice: {
-			type: Number,
-			required: true,
-			default: 0.0,
-		},
 		totalPrice: {
 			type: Number,
 			required: true,
 			default: 0.0,
-		},
-        isPaid: {
-            type: Boolean,
-            required: true,
-            default: false,
-          },
-          paidDate: {
-            type: Date,
-          },
-          isDelivered: {
-            type: Boolean,
-            required: true,
-            default: false,
-          },
-          deliveredDate: {
-            type: Date,
-          },
+		}
 	},
 	{
 		timestamps: true,
 	}
 );
 
-module.exports = mongoose.model("Order", OrderSchema);
+module.exports = mongoose.model("Booking", BookingSchema);

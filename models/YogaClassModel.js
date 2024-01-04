@@ -1,0 +1,96 @@
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+const YogaClassSchema = new Schema({
+	classType: {
+		type: String,
+		enum: [
+			"Power",
+			"Nidra",
+			"Vinyasa",
+			"Hatha",
+			"Iyengar",
+			"Kundalini",
+			"Ashtanga",
+			"Bikram",
+			"Yin",
+			"Workshop",
+		],
+	},
+	startTime: {
+		type: Date,
+		required: true,
+	},
+	endTime: {
+		type: Date,
+		required: true,
+	},
+	price: {
+		type: Number,
+	},
+	tax: {
+		type: Number,
+	},
+	totalPrice: {
+		type: Number,
+	},
+	location: {
+		type: String,
+		enum: [
+			"123 Main Street, Apt 4B, Cityville, State 12345, USA",
+			"456 Elm Avenue, Suite 7, Townsville, State 67890, USA",
+			"789 Oak Lane, Unit 12C, Villageton, State 34567, USA",
+		],
+	},
+	spotsRemaining: {
+		type: Number,
+		required: true,
+	},
+	maxCapacity: {
+		type: Number,
+		default: 20,
+	},
+	studentsSignedUp: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+		},
+	],
+	customDescription: String,
+});
+
+YogaClassSchema.pre("save", function (next) {
+	// Set initial spotsRemaining value based on maxCapacity
+	if (!this.spotsRemaining) {
+		this.spotsRemaining = this.maxCapacity;
+	}
+	next();
+});
+
+YogaClassSchema.virtual("classType").get(function () {
+	const descriptions = {
+		Power:
+			"A dynamic and energetic form of yoga that combines strength, flexibility, and breath control in a flowing sequence.",
+		Nidra:
+			"Achieve conscious relaxation through guided meditation, leading to deep relaxation and rejuvenation.",
+		Vinyasa:
+			"Flowing sequences and coordinated breath emphasize the smooth transition between poses, promoting a meditative and dynamic practice.",
+		Hatha:
+			"A foundational practice that focuses on physical postures (asanas) and breath control, aiming to create balance and alignment in the body and mind.",
+		Iyengar:
+			"Props and detailed instructions to help practitioners achieve optimal body positioning in each pose.",
+		Kundalini:
+			"A spiritual and dynamic practice that aims to awaken the dormant energy (kundalini) within, incorporating movement, breathwork, and meditation.",
+		Ashtanga:
+			"A rigorous and structured practice involving a set series of poses performed in a specific order, combined with breath control, promoting strength, flexibility, and focus.",
+		Bikram:
+			"Practiced in a heated room, a set sequence of 26 postures and two breathing exercises to enhance flexibility and detoxification.",
+		Yin: "A slow-paced style that involves holding passive poses for an extended duration, targeting connective tissues and promoting deep relaxation and flexibility.",
+	};
+
+	return this.customDescription || descriptions[this.classSchema] || "";
+});
+
+const YogaClassModel = mongoose.model("YogaClass", YogaClassSchema);
+
+module.exports = ClassModel;

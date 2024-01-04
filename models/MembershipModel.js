@@ -1,17 +1,15 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const ProductSchema = new Schema(
+const MembershipSchema = new Schema(
 	{
 		title: {
 			type: String,
+			enum: ['annual', 'monthly', '5-class-pass', '10-class-pass', 'none'],
 			required: true,
+			default: 'none'
 		},
 		description: {
-			type: String,
-			required: true,
-		},
-		category: {
 			type: String,
 			required: true,
 		},
@@ -19,19 +17,14 @@ const ProductSchema = new Schema(
 			type: Number,
 			required: true,
 		},
-		image: {
+		billFreq: {
 			type: String,
-			required: true,
-		},
-		countInStock: {
-			type: Number,
-			required: true,
-			default: 0,
-		},
+			enum: ['already-paid', 'annually-billed', 'monthly-billed']
+		}
 	},
 	{
 		timestamps: true,
 	}
 );
 
-module.exports = mongoose.model("Product", ProductSchema);
+module.exports = mongoose.model("Membership", MembershipSchema);

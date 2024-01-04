@@ -36,7 +36,19 @@ const UserSchema = new Schema(
             type: Boolean,
             required: true,
             default: false
-        }
+        },
+		isInstructor: {
+			type: Boolean,
+			required: true,
+			default: false
+		},
+		membership: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Membership'
+		},
+		classesTaken: {
+			type: Number
+		}
 	},
 	{
 		timestamps: true,

@@ -5,6 +5,9 @@ import reportWebVitals from "./reportWebVitals";
 import store from './store'
 import {HelmetProvider} from 'react-helmet-async'
 import { Provider } from "react-redux";
+import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import Home from "./components/Home";
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
