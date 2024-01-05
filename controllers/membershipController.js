@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler");
   
 
 module.exports.updateMembership = asyncHandler(async (req, res) => {
-	const {id} = req.params
+	const {userId} = req.params
 	const {membershipType} = req.body
 
 	try {
@@ -15,7 +15,7 @@ module.exports.updateMembership = asyncHandler(async (req, res) => {
         }
 
         const user = await User.findByIdAndUpdate(
-            id,
+            userId,
             {membership: membership._id},
             {new: true, runValidators: true}
         )
@@ -32,6 +32,11 @@ module.exports.updateMembership = asyncHandler(async (req, res) => {
 
 })
 
-module.exports.getMembership = asyncHandler(async (req, res) => {
-
-})
+module.exports.getMembers = asyncHandler(async (req, res) => {
+    try {
+        const members = await User.find({ membership: { $exists: true } }).populate('membership');
+        return res.status(200).json({ members });
+      } catch (error) {
+        return res.status(500).json({ msg: error.message });
+      }
+});
