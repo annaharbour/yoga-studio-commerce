@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const MembershipSchema = new Schema(
 	{
-		title: {
+		membershipType: {
 			type: String,
 			enum: ['annual', 'monthly', 'none'],
 			required: true,
@@ -11,20 +11,24 @@ const MembershipSchema = new Schema(
 		},
 		description: {
 			type: String,
-			required: true,
 		},
-		price: {
-			type: Number,
-			required: true,
-		},
-		billFreq: {
-			type: String,
-			enum: ['already-paid', 'annually-billed', 'monthly-billed']
+		isPaid: {
+			type: Boolean,
 		}
 	},
 	{
 		timestamps: true,
 	}
 );
+
+
+// MembershipSchema.virtual("membershipType").get(function () {
+// 	const price = {
+// 		annual: 1200,
+
+// 	};
+
+// 	return this.customDescription || descriptions[this.classSchema] || "";
+// });
 
 module.exports = mongoose.model("Membership", MembershipSchema);

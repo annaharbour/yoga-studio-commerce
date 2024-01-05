@@ -39,7 +39,6 @@ const UserSchema = new Schema(
         },
 		isInstructor: {
 			type: Boolean,
-			required: true,
 			default: false
 		},
 		membership: {
