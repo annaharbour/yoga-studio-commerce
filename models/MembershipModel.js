@@ -5,7 +5,7 @@ const MembershipSchema = new Schema(
 	{
 		title: {
 			type: String,
-			enum: ['annual', 'monthly', '5-class-pass', '10-class-pass', 'none'],
+			enum: ['annual', 'monthly', 'none'],
 			required: true,
 			default: 'none'
 		},

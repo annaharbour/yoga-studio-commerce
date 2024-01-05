@@ -15,6 +15,8 @@ const YogaClassSchema = new Schema({
 			"Bikram",
 			"Yin",
 			"Workshop",
+			"Yoga Teacher Certification",
+			"Yoga Retreat"
 		],
 	},
 	startTime: {
@@ -27,20 +29,12 @@ const YogaClassSchema = new Schema({
 	},
 	price: {
 		type: Number,
-	},
-	tax: {
-		type: Number,
-	},
-	totalPrice: {
-		type: Number,
+		required: true
 	},
 	location: {
 		type: String,
-		enum: [
-			"123 Main Street, Apt 4B, Cityville, State 12345, USA",
-			"456 Elm Avenue, Suite 7, Townsville, State 67890, USA",
-			"789 Oak Lane, Unit 12C, Villageton, State 34567, USA",
-		],
+		required: true,
+		default: "123 Main Street, Apt 4B, Cityville, State 12345, USA",
 	},
 	spotsRemaining: {
 		type: Number,
