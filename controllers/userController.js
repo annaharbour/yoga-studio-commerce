@@ -26,7 +26,7 @@ module.exports.signup = asyncHandler(async (req, res) => {
 				phoneNr,
 				email,
 				password,
-				isAdmin,
+				isAdmin
 			});
 
 			const hash = await bcrypt.hash(password, 10);
@@ -120,8 +120,8 @@ module.exports.getUsers = asyncHandler(async (req, res) => {
 		}
 
 		const userList = users.map((user) => {
-			const { _id, firstName, lastName, email } = user;
-			return { _id, firstName, lastName, email };
+			const { _id, firstName, lastName, email, phoneNr, isAdmin, isInstructor, membership } = user;
+			return { _id, firstName, lastName, email, phoneNr, isAdmin, isInstructor, membership};
 		});
 
 		return res.status(200).json({
@@ -158,12 +158,14 @@ module.exports.updateUser = asyncHandler(async (req, res) => {
 				email: updatedUser.email,
 				phoneNr: updatedUser.phoneNr,
 				isAdmin: updatedUser.isAdmin,
+
 			});
 		} 
 	} catch (error) {
 		return res.status(401).json({ msg: error.message });
 	}
 })
+
 
 module.exports.deleteUser = asyncHandler(async (req, res) => {
 	const user = await User.findById(req.params.id);
