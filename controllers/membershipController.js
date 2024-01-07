@@ -1,42 +1,116 @@
-const Membership = require('../models/MembershipModel')
-const User = require('../models/UserModel')
+const Membership = require("../models/MembershipModel");
+const User = require("../models/UserModel");
 const asyncHandler = require("express-async-handler");
-  
 
-module.exports.updateMembership = asyncHandler(async (req, res) => {
-	const {userId} = req.params
-	const {membershipType} = req.body
-
+// Get list of all members
+// Admin / Private Route
+// @route GET /membership/members
+module.exports.getMembers = asyncHandler(async (req, res) => {
 	try {
-		let membership = await Membership.findOne({membershipType})
+		const members = await User.find({ membership: { $exists: true } }).populate(
+			"membership"
+		);
+		return res.status(200).json({ members });
+	} catch (error) {
+		return res.status(500).json({ msg: error.message });
+	}
+});
 
-        if(!membership){
-            membership = await Membership.create({membershipType, price: 0})
-        }
+// Get Membership Plans
+// Public Route
+// @route GET /membership/plans
+module.exports.getMembershipPlans = asyncHandler(async (req, res) => {
+	try {
+		const memberships = await Membership.find();
 
-        const user = await User.findByIdAndUpdate(
-            userId,
-            {membership: membership._id},
-            {new: true, runValidators: true}
-        )
+		if (!memberships) {
+			return res.status(404).json({ msg: "No membership plans found" });
+		}
+		const membershipDetails = memberships.map((membership) => ({
+			membershipType: membership.membershipType,
+			details: membership.description,
+			billingFreq: membership.billingFreq,
+			price: membership.price,
+		}));
 
-    
-        if(!user){
-            return res.status(404).json({msg: 'User not found'})
-        }
-        
-        return res.status(200).json({msg: 'Membership updated successfully'})
-	} catch(err){
-		return res.status(500).json({msg: err.message})
+		return res.status(200).json({ membershipDetails });
+	} catch (error) {
+		return res.status(500).json({ msg: error.message });
+	}
+});
+
+// Get Membership Plans
+// Public Route
+// @route GET /membership/plan/:id
+module.exports.getMembershipPlanById = asyncHandler(async (req, res) => {
+	const membershipPlan = await Membership.findById(req.params.id);
+
+	if (membershipPlan) {
+		res.status(200).json(membershipPlan);
+	} else {
+		res.status(404);
+		throw new Error("Membership plan not found");
+	}
+});
+
+// Update Membership Plan
+// Admin/Private Route
+// @route PUT /membership/plan/:id
+module.exports.updateMembershipPlan = asyncHandler(async (req, res) => {
+	const { membershipType, description, billingFreq, price } = req.body;
+
+	const membershipPlan = await Membership.findById(req.params.id);
+
+	if (membershipPlan) {
+		membershipPlan.membershipType = membershipType;
+		membershipPlan.description = description;
+		membershipPlan.billingFreq = billingFreq;
+		membershipPlan.price = price;
+
+		const updatedMembershipPlan = await membershipPlan.save();
+		res.json(updatedMembershipPlan);
+	} else {
+		res.status(404);
+		throw new Error("Membership plan not found");
+	}
+});
+
+// Delete Class
+// Admin / Private Route
+// @route DELETE /membership/plan/:id
+module.exports.deleteClassById = asyncHandler(async (req, res) => {
+	const membershipPlan = await Membership.findById(req.params.id);
+	try {
+		await MemberShipPlan.deleteOne({ _id: membershipPlan._id });
+		res.status(200).json({ message: "Member plan deleted successfully" });
+	} catch (err) {
+		res.status(400).json({ message: "Membership plan deletion failed" });
+	}
+});
+
+// Create new membership plan
+// Admin / Private Route
+// @route POST /membership/plan
+module.exports.createMembershipPlan = asyncHandler(async (req, res) => {
+	const { membershipType, description, billingFreq, price } = req.body;
+
+	if (!membershipType || !description || !billingFreq || !price) {
+		return res.status(400).json({ msg: "Please enter all fields" });
 	}
 
-})
+	try {
+		const newPlan = new Membership({
+			membershipType,
+			description,
+			billingFreq,
+			price,
+		});
 
-module.exports.getMembers = asyncHandler(async (req, res) => {
-    try {
-        const members = await User.find({ membership: { $exists: true } }).populate('membership');
-        return res.status(200).json({ members });
-      } catch (error) {
-        return res.status(500).json({ msg: error.message });
-      }
+		await newPlan.save();
+
+		return res.status(201).json({ msg: "Membership plan created" });
+	} catch (err) {
+		console.error("Error creating user:", err);
+		return res.status(500).json({ error: "Internal server error" });
+	}
 });

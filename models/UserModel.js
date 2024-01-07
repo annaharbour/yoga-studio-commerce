@@ -43,7 +43,11 @@ const UserSchema = new Schema(
 		},
 		membership: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Membership'
+			ref: 'Membership',
+			isPaid: {
+				type: Boolean,
+				default: false
+			}
 		},
 		classesTaken: {
 			type: Number

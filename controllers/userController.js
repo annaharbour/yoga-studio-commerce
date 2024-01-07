@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/UserModel");
+const Membership = require("../models/MembershipModel")
 const asyncHandler = require("express-async-handler");
 const { v4: uuidv4 } = require("uuid");
 
@@ -182,3 +183,36 @@ module.exports.deleteUser = asyncHandler(async (req, res) => {
 		throw new Error("User not found");
 	}
 });
+
+
+// PUT update membership
+// Private Route
+// @ auth/member
+module.exports.updateUserMembership = asyncHandler(async (req, res) => {
+	const {userId} = req.params
+	const {membershipType} = req.body
+
+	try {
+		let membership = await Membership.findOne({membershipType})
+
+        if(!membership){
+            membership = await Membership.create({membershipType})
+        }
+
+        const user = await User.findByIdAndUpdate(
+            userId,
+            {membership: membership._id},
+            {new: true, runValidators: true}
+        )
+
+    
+        if(!user){
+            return res.status(404).json({msg: 'User not found'})
+        }
+        
+        return res.status(200).json({msg: 'Membership updated successfully'})
+	} catch(err){
+		return res.status(500).json({msg: err.message})
+	}
+
+})

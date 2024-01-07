@@ -29,11 +29,10 @@ const YogaClassSchema = new Schema({
 	},
 	price: {
 		type: Number,
-		required: true
+		default: 20
 	},
 	location: {
 		type: String,
-		required: true,
 		default: "123 Main Street, Apt 4B, Cityville, State 12345, USA",
 	},
 	spotsRemaining: {
@@ -85,6 +84,6 @@ YogaClassSchema.virtual("classType").get(function () {
 	return this.customDescription || descriptions[this.classSchema] || "";
 });
 
-const YogaClassModel = mongoose.model("YogaClass", YogaClassSchema);
+const YogaClass = mongoose.model("YogaClass", YogaClassSchema);
 
-module.exports = ClassModel;
+module.exports = YogaClass;
