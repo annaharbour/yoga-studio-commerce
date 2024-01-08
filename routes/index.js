@@ -12,3 +12,4 @@ router.use("/classes", yogaClassRoutes);
 router.use("/booking", bookingRoutes);
 
 module.exports = router;
+

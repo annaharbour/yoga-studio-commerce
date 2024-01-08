@@ -6,6 +6,7 @@ const {
 	updateMembershipPlan,
 	getMembers,
 	signupForMembership,
+	deletePlanById,
 } = require("../controllers/membershipController");
 const router = Router();
 const { protect, admin } = require("../middleware/authMiddleware");
@@ -16,7 +17,7 @@ router
 	.route("/plan/:id")
 	.get(getMembershipPlanById)
 	.put(protect, admin, updateMembershipPlan)
-	.post(protect, signupForMembership);
+	.delete(protect, admin, deletePlanById);
 router.post("/plan", protect, admin, createMembershipPlan);
 
 module.exports = router;

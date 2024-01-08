@@ -60,7 +60,7 @@ YogaClassSchema.pre("save", function (next) {
 	next();
 });
 
-YogaClassSchema.virtual("classType").get(function () {
+YogaClassSchema.virtual("description").get(function () {
 	const descriptions = {
 		Power:
 			"A dynamic and energetic form of yoga that combines strength, flexibility, and breath control in a flowing sequence.",

@@ -31,6 +31,7 @@ module.exports.getMembershipPlans = asyncHandler(async (req, res) => {
 			details: membership.description,
 			billingFreq: membership.billingFreq,
 			price: membership.price,
+			id: membership._id
 		}));
 
 		return res.status(200).json({ membershipDetails });
@@ -78,13 +79,20 @@ module.exports.updateMembershipPlan = asyncHandler(async (req, res) => {
 // Delete Class
 // Admin / Private Route
 // @route DELETE /membership/plan/:id
-module.exports.deleteClassById = asyncHandler(async (req, res) => {
-	const membershipPlan = await Membership.findById(req.params.id);
+module.exports.deletePlanById = asyncHandler(async (req, res) => {
+	const membershipPlanId = req.params.id;
+
 	try {
-		await MemberShipPlan.deleteOne({ _id: membershipPlan._id });
-		res.status(200).json({ message: "Member plan deleted successfully" });
+		const deletedMembershipPlan = await Membership.findByIdAndDelete(membershipPlanId);
+
+		if (!deletedMembershipPlan) {
+			return res.status(404).json({ message: "Membership plan not found" });
+		}
+
+		return res.status(200).json({ message: "Membership plan deleted successfully" });
 	} catch (err) {
-		res.status(400).json({ message: "Membership plan deletion failed" });
+		console.error("Error deleting membership plan:", err);
+		return res.status(500).json({ message: "Membership plan deletion failed" });
 	}
 });
 
@@ -108,41 +116,10 @@ module.exports.createMembershipPlan = asyncHandler(async (req, res) => {
 
 		await newPlan.save();
 
-		return res.status(201).json({ msg: "Membership plan created" });
+		return res.status(201).json({ msg: "Membership plan created" , planId: newPlan._id});
 	} catch (err) {
 		console.error("Error creating user:", err);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 });
 
-// Sign up for a membership
-// @route POST /membership/signup
-// @access Private 
-module.exports.signupForMembership = asyncHandler(async (req, res) => {
-	const { userId } = req.user; 
-  
-	try {
-	  const membership = await Membership.findOne(req.params.id);
-  
-	  if (!membership) {
-		return res.status(404).json({ msg: 'Membership not found' });
-	  }
-  
-	  const user = await User.findById(userId);
-  
-	  if (!user) {
-		return res.status(404).json({ msg: 'User not found' });
-	  }
-  
-	  if (user.membership) {
-		return res.status(400).json({ msg: 'User is already a member' });
-	  }
-  
-	  user.membership = membership._id;
-	  await user.save();
-  
-	  return res.status(201).json({ msg: 'Membership signed up successfully' });
-	} catch (error) {
-	  return res.status(500).json({ msg: error.message });
-	}
-  });

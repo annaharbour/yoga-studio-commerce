@@ -12,6 +12,11 @@ module.exports.signup = asyncHandler(async (req, res) => {
 		return res.status(400).json({ msg: "Please enter all fields" });
 	}
 
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	if (!emailRegex.test(email)) {
+		return res.status(400).json({ msg: "Invalid email format" });
+	}
+
 	try {
 		const user = await User.findOne({ email });
 
@@ -169,7 +174,8 @@ module.exports.updateUser = asyncHandler(async (req, res) => {
 
 
 module.exports.deleteUser = asyncHandler(async (req, res) => {
-	const user = await User.findById(req.params.id);
+	const user = await User.findById(req.params.id)
+
 
 	if (user) {
 		if (user.isAdmin) {
@@ -188,31 +194,64 @@ module.exports.deleteUser = asyncHandler(async (req, res) => {
 // PUT update membership
 // Private Route
 // @ auth/member
-module.exports.updateUserMembership = asyncHandler(async (req, res) => {
-	const {userId} = req.params
-	const {membershipType} = req.body
-
+module.exports.createUserMembership = asyncHandler(async (req, res) => {
+	const { userId } = req.user;
+	const id = req.params.id;
+  
 	try {
-		let membership = await Membership.findOne({membershipType})
-
-        if(!membership){
-            membership = await Membership.create({membershipType})
-        }
-
-        const user = await User.findByIdAndUpdate(
-            userId,
-            {membership: membership._id},
-            {new: true, runValidators: true}
-        )
-
-    
-        if(!user){
-            return res.status(404).json({msg: 'User not found'})
-        }
-        
-        return res.status(200).json({msg: 'Membership updated successfully'})
-	} catch(err){
-		return res.status(500).json({msg: err.message})
+	  let membership = await Membership.findById(id);
+	  if (!membership) {
+		res.status(404).json({ msg: "Membership plan not found" });
+	  }
+  
+	  const user = await User.findOneAndUpdate(
+		{ userId: userId }, // Find by userId
+		{ membership: membership },
+		{ new: true, runValidators: true }
+	  );
+  
+	  if (!user) {
+		return res.status(404).json({ msg: "User not found" });
+	  }
+  
+	  return res.status(200).json({ msg: "Membership created successfully" });
+	} catch (err) {
+	  return res.status(500).json({ msg: err.message });
 	}
+  });
+  
 
-})
+
+// Sign up for a membership
+// @route POST /auth/membership/:id
+// @access Private 
+module.exports.signupForMembership = asyncHandler(async (req, res) => {
+  
+	try {
+	  const user = await User.findById(req.user)
+	  console.log(user)
+	  if (!user) {
+		return res.status(404).json({ msg: 'User not found' });
+	  }
+  
+	//   const {membershipId} = req.params;
+	//   console.log(membershipId)
+	//   const membership = await Membership.findById(membershipId);
+  	//   console.log(membership)
+	//   if (!membership) {
+	// 	return res.status(404).json({ msg: 'Membership not found' });
+	//   }
+  
+	//   if (user.membership) {
+	// 	return res.status(400).json({ msg: 'User is already a member' });
+	//   }
+  
+	//   user.membership = membership;
+	//   await user.save();
+  
+	//   return res.status(201).json({ msg: 'Membership signed up successfully' });
+	} catch (error) {
+	  return res.status(500).json({ msg: error.message });
+	}
+  });
+  

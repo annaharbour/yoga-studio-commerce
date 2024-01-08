@@ -1,4 +1,4 @@
-const YogaClass = require("../models/YogaClass");
+const YogaClass = require("../models/YogaClassModel");
 const User = require("../models/UserModel");
 const asyncHandler = require("express-async-handler");
 
