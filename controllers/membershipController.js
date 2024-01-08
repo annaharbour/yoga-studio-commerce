@@ -114,3 +114,35 @@ module.exports.createMembershipPlan = asyncHandler(async (req, res) => {
 		return res.status(500).json({ error: "Internal server error" });
 	}
 });
+
+// Sign up for a membership
+// @route POST /membership/signup
+// @access Private 
+module.exports.signupForMembership = asyncHandler(async (req, res) => {
+	const { userId } = req.user; 
+  
+	try {
+	  const membership = await Membership.findOne(req.params.id);
+  
+	  if (!membership) {
+		return res.status(404).json({ msg: 'Membership not found' });
+	  }
+  
+	  const user = await User.findById(userId);
+  
+	  if (!user) {
+		return res.status(404).json({ msg: 'User not found' });
+	  }
+  
+	  if (user.membership) {
+		return res.status(400).json({ msg: 'User is already a member' });
+	  }
+  
+	  user.membership = membership._id;
+	  await user.save();
+  
+	  return res.status(201).json({ msg: 'Membership signed up successfully' });
+	} catch (error) {
+	  return res.status(500).json({ msg: error.message });
+	}
+  });

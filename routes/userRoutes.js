@@ -10,4 +10,5 @@ router.get('/users', protect, admin, getUsers)
 router.route("/:id").get(protect, getUser).put(protect, admin, updateUser).delete(protect, admin, deleteUser)
 router.post('/:userId', protect, updateUserMembership);
 
+
 module.exports = router;

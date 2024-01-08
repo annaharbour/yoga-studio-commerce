@@ -10,7 +10,7 @@ const router = Router();
 const { protect, admin } = require("../middleware/authMiddleware");
 
 router.post("/class", protect, admin, createClass);
-router.get("classes", getClasses);
+router.get("/all", getClasses);
 router
 	.route("/class/:id")
 	.get(getClassById)

@@ -6,7 +6,6 @@ const asyncHandler = require("express-async-handler");
 // Private / Admin Route
 // @route DELETE /bookings/:id
 module.exports.getClassBookings = asyncHandler(async (req, res) => {
-	// Find the YogaClass by its ID and populate the studentsSignedUp field
 	const yogaClass = await YogaClass.findById(req.params.id).populate(
 		"studentsSignedUp"
 	);
