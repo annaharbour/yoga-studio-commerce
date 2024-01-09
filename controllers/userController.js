@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/UserModel");
-const Membership = require("../models/MembershipModel")
+const Membership = require("../models/MembershipModel");
 const asyncHandler = require("express-async-handler");
 const { v4: uuidv4 } = require("uuid");
 
@@ -32,7 +32,7 @@ module.exports.signup = asyncHandler(async (req, res) => {
 				phoneNr,
 				email,
 				password,
-				isAdmin
+				isAdmin,
 			});
 
 			const hash = await bcrypt.hash(password, 10);
@@ -69,7 +69,7 @@ module.exports.login = asyncHandler(async (req, res) => {
 			{
 				email,
 				userId,
-				isAdmin
+				isAdmin,
 			},
 			process.env.JWTSecret,
 			{
@@ -77,12 +77,12 @@ module.exports.login = asyncHandler(async (req, res) => {
 			}
 		);
 
-		res.cookie('accessToken', jwtToken, { httpOnly: true, maxAge: 3600000 }); 
+		res.cookie("accessToken", jwtToken, { httpOnly: true, maxAge: 3600000 });
 
 		return res.status(200).json({
 			accessToken: jwtToken,
 			userId,
-			isAdmin
+			isAdmin,
 		});
 	} catch (err) {
 		return res.status(401).json({
@@ -126,8 +126,26 @@ module.exports.getUsers = asyncHandler(async (req, res) => {
 		}
 
 		const userList = users.map((user) => {
-			const { _id, firstName, lastName, email, phoneNr, isAdmin, isInstructor, membership } = user;
-			return { _id, firstName, lastName, email, phoneNr, isAdmin, isInstructor, membership};
+			const {
+				_id,
+				firstName,
+				lastName,
+				email,
+				phoneNr,
+				isAdmin,
+				isInstructor,
+				membership,
+			} = user;
+			return {
+				_id,
+				firstName,
+				lastName,
+				email,
+				phoneNr,
+				isAdmin,
+				isInstructor,
+				membership,
+			};
 		});
 
 		return res.status(200).json({
@@ -150,13 +168,13 @@ module.exports.updateUser = asyncHandler(async (req, res) => {
 			user.lastName = req.body.lastName || user.lastName;
 			user.email = req.body.email || user.email;
 			user.phoneNr = req.body.phoneNr || user.phoneNr;
-			
+
 			if (req.body.password) {
 				user.password = req.body.password;
 			}
-	
+
 			const updatedUser = await user.save();
-	
+
 			res.status(200).json({
 				userId: updatedUser.userId,
 				firstName: updatedUser.firstName,
@@ -164,18 +182,15 @@ module.exports.updateUser = asyncHandler(async (req, res) => {
 				email: updatedUser.email,
 				phoneNr: updatedUser.phoneNr,
 				isAdmin: updatedUser.isAdmin,
-
 			});
-		} 
+		}
 	} catch (error) {
 		return res.status(401).json({ msg: error.message });
 	}
-})
-
+});
 
 module.exports.deleteUser = asyncHandler(async (req, res) => {
-	const user = await User.findById(req.params.id)
-
+	const user = await User.findById(req.params.id);
 
 	if (user) {
 		if (user.isAdmin) {
@@ -190,68 +205,68 @@ module.exports.deleteUser = asyncHandler(async (req, res) => {
 	}
 });
 
-
 // PUT update membership
 // Private Route
 // @ auth/member
 module.exports.createUserMembership = asyncHandler(async (req, res) => {
 	const { userId } = req.user;
 	const id = req.params.id;
-  
+
+	const membership = await Membership.findById(id);
+	if (!membership) {
+		return res.status(404).json({ msg: "Membership plan not found" });
+	}
+
 	try {
-	  let membership = await Membership.findById(id);
-	  if (!membership) {
-		res.status(404).json({ msg: "Membership plan not found" });
-	  }
-  
-	  const user = await User.findOneAndUpdate(
-		{ userId: userId }, // Find by userId
-		{ membership: membership },
-		{ new: true, runValidators: true }
-	  );
-  
-	  if (!user) {
-		return res.status(404).json({ msg: "User not found" });
-	  }
-  
-	  return res.status(200).json({ msg: "Membership created successfully" });
+		const user = await User.findOne({ userId: userId });
+
+		if (!user) {
+			return res.status(404).json({ msg: "User not found" });
+		}
+
+		if (user.membership) {
+			return res.status(400).json({ msg: "User already has a membership" });
+		}
+
+		user.membership = membership;
+		await user.save();
+
+		return res.status(200).json({ msg: "Membership created successfully" });
 	} catch (err) {
-	  return res.status(500).json({ msg: err.message });
+		return res.status(500).json({ msg: err.message });
 	}
-  });
-  
+});
 
+// Delete user's membership
+// @route DELETE /membership/delete
+// @access Private
+module.exports.cancelMembership = asyncHandler(async (req, res) => {
+	const { userId } = req.user;
+	const id = req.params.id;
 
-// Sign up for a membership
-// @route POST /auth/membership/:id
-// @access Private 
-module.exports.signupForMembership = asyncHandler(async (req, res) => {
-  
+	const membership = await Membership.findById(id);
+	if (!membership) {
+		return res.status(404).json({ msg: "Membership plan not found" });
+	}
+
 	try {
-	  const user = await User.findById(req.user)
-	  console.log(user)
-	  if (!user) {
-		return res.status(404).json({ msg: 'User not found' });
-	  }
-  
-	//   const {membershipId} = req.params;
-	//   console.log(membershipId)
-	//   const membership = await Membership.findById(membershipId);
-  	//   console.log(membership)
-	//   if (!membership) {
-	// 	return res.status(404).json({ msg: 'Membership not found' });
-	//   }
-  
-	//   if (user.membership) {
-	// 	return res.status(400).json({ msg: 'User is already a member' });
-	//   }
-  
-	//   user.membership = membership;
-	//   await user.save();
-  
-	//   return res.status(201).json({ msg: 'Membership signed up successfully' });
-	} catch (error) {
-	  return res.status(500).json({ msg: error.message });
+		const user = await User.findOne({ userId: userId });
+
+		if (!user) {
+			return res.status(404).json({ msg: "User not found" });
+		}
+
+		if (!user.membership) {
+			return res.status(400).json({ msg: "User has no membership yet" });
+		}
+
+		user.membership = null;
+		await user.save();
+
+		return res.status(200).json({ msg: "Membership canceled successfully" });
+	} catch (err) {
+		return res.status(500).json({ msg: err.message });
 	}
-  });
-  
+});
+
+
