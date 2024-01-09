@@ -77,14 +77,14 @@ module.exports.createClass = asyncHandler(async (req, res) => {
 			price,
 			location,
 			maxCapacity,
-			_id
+			
 		});
 
 		await newClass.save();
 
 		return res.status(201).json({ msg: "New yoga class created" });
 	} catch (err) {
-		console.error("Error creating user:", err);
+		console.error("Error creating class:", err);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 });

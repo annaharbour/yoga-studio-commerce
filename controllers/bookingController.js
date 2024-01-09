@@ -31,38 +31,38 @@ module.exports.getClassBookings = asyncHandler(async (req, res) => {
 // Private Route
 // @route POST /booking/:id
 module.exports.createBooking = asyncHandler(async (req, res) => {
-	const { id } = req.params;
+	const id = req.params.id;
 	const { userId } = req.user;
 
-	const yogaClass = await YogaClass.findById(id);
+	try {
+		const yogaClass = await YogaClass.findById(id);
+		if (!yogaClass) {
+			return res.status(404).json({ msg: "Yoga class  not found" });
+		}
 
-	if (!yogaClass) {
-		return res.status(404).json({ msg: "Yoga class not found" });
-	}
+		const user = await User.findOne({ userId: userId });
+		if (!user) {
+			return res.status(404).json({ msg: "User not found" });
+		}
 
-	const user = await User.findById(userId);
+		let bookingPrice = 0;
 
-	if (!user) {
-		return res.status(404).json({ msg: "User not found" });
-	}
+		if (user.membership !== "none") {
+			bookingPrice = yogaClass.price;
+		}
 
-	let bookingPrice = 0;
+		if (yogaClass.spotsRemaining > 0) {
+			yogaClass.spotsRemaining--;
 
-	if (user.membership !== "none") {
-		bookingPrice = yogaClass.price;
-	}
+			yogaClass.studentsSignedUp.push(user);
 
-	if (yogaClass.spotsRemaining > 0) {
-		yogaClass.spotsRemaining--;
+			await yogaClass.save();
+			await user.save();
 
-		yogaClass.studentsSignedUp.push(userId);
-
-		await yogaClass.save();
-		await user.save();
-
-		return res.status(201).json({ message: "Booking created" });
-	} else {
-		return res.status(400).json({ message: "No spots remaining in class" });
+			return res.status(200).json({ message: "Booking created" });
+		}
+	} catch (err) {
+		return res.status(500).json({ message: err.message });
 	}
 });
 
@@ -70,31 +70,31 @@ module.exports.createBooking = asyncHandler(async (req, res) => {
 // Private Route
 // @route DELETE /bookings/:id
 module.exports.cancelBooking = asyncHandler(async (req, res) => {
-	const { userId } = req.user;
+  const { userId } = req.user;
 
-	const yogaClass = await YogaClass.findById(req.params.id);
+  const yogaClass = await YogaClass.findById(req.params.id);
 
-	if (!yogaClass) {
-		return res.status(404).json({ message: "Yoga class not found" });
-	}
+  if (!yogaClass) {
+    return res.status(404).json({ message: "Yoga class not found" });
+  }
 
-	const user = await User.findById(userId);
-	if (!user) {
-		return res.status(404).json({ message: "User not found" });
-	}
+  const user = await User.findOne({ userId: userId });
+   if (!user) {
+     return res.status(404).json({ message: "User not found" });
+   }
 
-	const isBooked = yogaClass.studentsSignedUp.includes(userId);
+const isBooked = yogaClass.studentsSignedUp.some(studentId => studentId.equals(user._id));
 
-	if (!isBooked) {
-		return res.status(400).json({ msg: "User is not booked for this class" });
-	}
+   if (!isBooked) {
+     return res.status(400).json({ msg: "User is not booked for this class" });
+   }
 
-	yogaClass.studentsSignedUp = yogaClass.studentsSignedUp.filter(
-		(student) => student.userId !== userId
-	);
+   yogaClass.studentsSignedUp = yogaClass.studentsSignedUp.filter(
+    (studentId) => !studentId.equals(user._id)
+  );
 
-	await yogaClass.save();
-	await user.save();
+  await yogaClass.save();
+  await user.save();
 
-	return res.status(200).json({ message: "Booking canceled" });
+  return res.status(200).json({ message: "Booking canceled" });
 });
