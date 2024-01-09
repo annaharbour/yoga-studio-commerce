@@ -6,9 +6,9 @@ const yogaClassRoutes = require("./yogaClassRoutes");
 
 const router = Router();
 
-router.use("/auth", userRoutes);
+router.use("/users", userRoutes);
 router.use("/membership", membershipRoutes);
-router.use("/classes", yogaClassRoutes);
+router.use("/schedule", yogaClassRoutes);
 router.use("/booking", bookingRoutes);
 
 module.exports = router;

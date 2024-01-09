@@ -50,6 +50,20 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 			}),
 			invalidatesTags: ["User"],
 		}),
+		createUserMembership: builder.mutation({
+			query: (data) => ({
+				url: `${USERS_URL}/membership/${data.membershipId}`,
+				method: "POST",
+				body: data,
+			}),
+		}),
+		cancelMembership: builder.mutation({
+			query: (data) => ({
+				url: `${USERS_URL}/membership/${data.membershipId}`,
+				method: "DELETE",
+				body: data,
+			}),
+		}),
 	}),
 });
 
@@ -57,9 +71,10 @@ export const {
 	useLoginMutation,
 	useLogoutMutation,
 	useRegisterMutation,
-	useProfileMutation,
 	useGetUsersQuery,
 	useDeleteUserMutation,
 	useGetUserDetailsQuery,
 	useUpdateUserMutation,
+	useCreateUserMembershipMutation,
+	useCancelMembershipMutation
 } = usersApiSlice;
