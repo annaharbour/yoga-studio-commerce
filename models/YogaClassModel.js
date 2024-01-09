@@ -37,7 +37,6 @@ const YogaClassSchema = new Schema({
 	},
 	spotsRemaining: {
 		type: Number,
-		required: true,
 	},
 	maxCapacity: {
 		type: Number,
@@ -83,6 +82,10 @@ YogaClassSchema.virtual("description").get(function () {
 
 	return this.customDescription || descriptions[this.classSchema] || "";
 });
+
+YogaClassSchema.virtual("classId").get(function () {
+	return this._id.toHexString();
+  });  
 
 const YogaClass = mongoose.model("YogaClass", YogaClassSchema);
 

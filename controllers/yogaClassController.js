@@ -1,4 +1,5 @@
 const YogaClass = require("../models/YogaClassModel");
+const Membership = require("../models/MembershipModel")
 const asyncHandler = require("express-async-handler");
 
 // Get calendar of bookable classes
@@ -22,6 +23,7 @@ module.exports.getClasses = asyncHandler(async (req, res) => {
 				spotsRemaining,
 				maxCapacity,
 				studentsSignedUp,
+				_id
 			} = event;
 			return {
 				classType,
@@ -32,6 +34,7 @@ module.exports.getClasses = asyncHandler(async (req, res) => {
 				spotsRemaining,
 				maxCapacity,
 				studentsSignedUp,
+				_id
 			};
 		});
 		return res.status(200).json({
@@ -52,8 +55,7 @@ module.exports.createClass = asyncHandler(async (req, res) => {
 		endTime,
 		price,
 		location,
-		spotsRemaining,
-		maxCapacity,
+		maxCapacity
 	} = req.body;
 
 	if (
@@ -62,7 +64,6 @@ module.exports.createClass = asyncHandler(async (req, res) => {
 		!endTime ||
 		!price ||
 		!location ||
-		!spotsRemaining ||
 		!maxCapacity
 	) {
 		return res.status(400).json({ msg: "Please enter all fields" });
@@ -75,9 +76,8 @@ module.exports.createClass = asyncHandler(async (req, res) => {
 			endTime,
 			price,
 			location,
-			spotsRemaining,
 			maxCapacity,
-			studentsSignedUp,
+			_id
 		});
 
 		await newClass.save();
@@ -107,32 +107,38 @@ module.exports.getClassById = asyncHandler(async (req, res) => {
 // Admin / Private Route
 // @route PUT /class/:id
 module.exports.updateClassById = asyncHandler(async (req, res) => {
-	const {
-		classType,
-		startTime,
-		endTime,
-		price,
-		location,
-		spotsRemaining,
-		maxCapacity,
-	} = req.body;
+	try {
+		const yogaClass = await YogaClass.findById(req.params.id);
+		if (!yogaClass) {
+			return res.status(403).json({ msg: "Class not found" });
+		} else {
+			yogaClass.classType = req.body.classType || yogaClass.classType;
+			yogaClass.startTime = req.body.startTime || yogaClass.startTime;
+			yogaClass.endTime = req.body.endTime || yogaClass.endTime;
+			yogaClass.price = req.body.price || yogaClass.price;
+			yogaClass.location = req.body.location || yogaClass.location;
+			yogaClass.maxCapacity = req.body.maxCapacity || yogaClass.maxCapacity;
 
-	const yogaClass = await Membership.findById(req.params.id);
+			if (req.body.password) {
+				yogaClass.password = req.body.password;
+			}
 
-	if (yogaClass) {
-		yogaClass.classType = classType;
-		yogaClass.startTime = startTime;
-		yogaClass.endTime = endTime;
-		(yogaClass.price = price), (yogaClass.classType = location);
-		(yogaClass.classType = spotsRemaining),
-			(yogaClass.maxCapacity = maxCapacity);
+			const updatedYogaClass = await yogaClass.save();
 
-		const updatedyogaClass = await yogaClass.save();
-		res.json(updatedyogaClass);
-	} else {
-		res.status(404);
-		throw new Error("Membership plan not found");
+			res.status(200).json({
+				
+				classType: updatedYogaClass.classType,
+				startTime: updatedYogaClass.startTime,
+				endTime: updatedYogaClass.endTime,
+				price: updatedYogaClass.price,
+				location: updatedYogaClass.location,
+				maxCapacity: updatedYogaClass.maxCapacity,
+			});
+		}
+	} catch (error) {
+		return res.status(401).json({ msg: error.message });
 	}
+	
 });
 
 // Delete Class
