@@ -9,6 +9,8 @@ const baseQuery = fetchBaseQuery({
 
 async function baseQueryWithAuth(args, api, extra) {
 	const result = await baseQuery(args, api, extra);
+	console.log(args)
+	console.log(result)
 	if (result.error && result.error.status === 401) {
 		api.dispatch(logout());
 	}

@@ -3,11 +3,24 @@
 	box-sizing: border-box;
 }
 
-html, body {
+:root {
 	height: 100%;
 	margin: 0;
-	overflow-x: hidden
+	overflow-x: hidden;
 
+	/* Toast Message */
+	--toastify-color-light: #fff;
+	--toastify-color-dark: #121212;
+	--toastify-color-info: #3498db;
+	--toastify-color-success: #07bc0c;
+	--toastify-color-warning: #f1c40f;
+	--toastify-color-error: #e74c3c;
+	--toastify-color-transparent: rgba(255, 255, 255, 0.7);
+
+	--toastify-icon-color-info: var(--toastify-color-info);
+	--toastify-icon-color-success: var(--toastify-color-success);
+	--toastify-icon-color-warning: var(--toastify-color-warning);
+	--toastify-icon-color-error: var(--toastify-color-error);
 }
 
 .App {
@@ -37,7 +50,10 @@ html, body {
 		text-decoration: none;
 	}
 	a:hover {
-		text-decoration: underline
+		text-decoration: underline;
+	}
+	.nav-icon {
+		margin-right: 0.5rem;
 	}
 	.auth {
 		margin-left: auto;
@@ -68,7 +84,7 @@ img {
 	width: 100%;
 	text-align: center;
 	font-size: 10rem;
-	-webkit-text-fill-color: #F2ECF6; 
+	-webkit-text-fill-color: #f2ecf6;
 	-webkit-text-stroke: 3px #333;
 	text-shadow: 5px 1px 1px black;
 }
@@ -84,3 +100,54 @@ img {
 	justify-content: center;
 	align-items: center;
 }
+
+.auth-link {
+	margin: 1rem;
+	text-align: center;
+	width: 100%;
+}
+
+form {
+	max-width: 30rem;
+	margin: 1rem auto;
+	input[type="text"],
+	input[type="email"],
+	input[type="tel"],
+	input[type="password"] {
+		background: rgba(255, 255, 255, 0.1);
+		border: none;
+		border: 5rem;
+		font-size: 16px;
+		font-style: inherit;
+		height: auto;
+		margin: 0;
+		outline: 0;
+		padding: 1rem;
+		width: 100%;
+		background-color: #e8eeef;
+		color: #8a97a0;
+		box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
+		margin-bottom: 3rem;
+	}
+
+	button {
+		cursor: pointer;
+		width: 100%;
+		padding: 1rem;
+		color: #fff;
+		background-color: #FFB74C;
+		font-size: 18px;
+		text-align: center;
+		border: none;
+		border-radius: 5rem;
+		border-width: 1px 1px 3px;
+		box-shadow: .1rem .1rem .1rem #333;
+	}
+
+}
+
+h1 {
+	margin: 2rem;
+	text-align: center;
+}
+

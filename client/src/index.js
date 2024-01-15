@@ -9,6 +9,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
+import Plans from "./components/memberships/Plans";
+import Retreats from './components/schedule/Retreats'
+import Classes from "./components/schedule/Classes";
 
 const router = (
 	<BrowserRouter>
@@ -17,6 +20,10 @@ const router = (
 				<Route index={true} path="/" element={<Home />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/register" element={<Register />} />
+				<Route path="/memberships" element={<Plans />} />
+				<Route path="/retreats" element={<Retreats />} />
+				<Route path="/schedule" element={<Classes />} />
+
 			</Route>
 		</Routes>
 	</BrowserRouter>

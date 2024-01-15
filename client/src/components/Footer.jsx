@@ -2,6 +2,6 @@ import React from 'react'
 
 export default function Footer() {
   return (
-    <div className='footer'>@Yoga Studio</div>
+    <div className='footer'>@Voyager Yoga</div>
   )
 }
