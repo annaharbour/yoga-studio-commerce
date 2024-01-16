@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "../../slices/authSlice";
 import { useLoginMutation } from "../../slices/usersSlice";
@@ -25,7 +25,7 @@ function Login() {
 		if (userInfo) {
 			navigate(redirect);
 		}
-	}, [userInfo, navigate]);
+	}, [userInfo, redirect, navigate]);
 
 	const submitHandler = async (e) => {
 		e.preventDefault();
@@ -34,11 +34,9 @@ function Login() {
 			dispatch(setCredentials({ ...res }));
 			navigate(redirect);
 		} catch (err) {
-			toast.error(err?.data?.message || err.message, {
-				theme: "dark",
-			});
+			 toast.error(err?.data?.msg || err.message)
 		}
-	};
+	}
 
 	return (
 		<div className="form">

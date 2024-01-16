@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, redirect, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "../../slices/authSlice";
 import { useRegisterMutation } from "../../slices/usersSlice";
@@ -28,7 +28,7 @@ function Register() {
 		if (userInfo) {
 			navigate(redirect);
 		}
-	}, [userInfo, navigate]);
+	}, [userInfo, navigate, redirect]);
 
 	const submitHandler = async (e) => {
     e.preventDefault()
@@ -41,7 +41,6 @@ function Register() {
         navigate(redirect)
       } catch(err){
         toast.error(err?.data?.message || err.error)
-        console.error(err)
       }
     }
   }
