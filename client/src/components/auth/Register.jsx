@@ -44,7 +44,6 @@ function Register() {
       }
     }
   }
-	
 
 	return (
 		<div className="form">

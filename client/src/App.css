@@ -45,6 +45,18 @@
 		margin-left: auto;
 		margin-right: 3rem;
 	}
+
+	.dropdown-container {
+		position: relative;
+	  }
+	  
+	  .user-links-dropdown {
+		background-color: #292f31;
+		position: absolute;
+		top: 100%;
+		left: 0;
+		display: block;
+	  }
 }
 
 .content {
