@@ -12,6 +12,7 @@ import Register from "./components/auth/Register";
 import Plans from "./components/memberships/Plans";
 import Retreats from './components/schedule/Retreats'
 import Classes from "./components/schedule/Classes";
+import Profile from './components/auth/Profile'
 
 const router = (
 	<BrowserRouter>
@@ -23,6 +24,8 @@ const router = (
 				<Route path="/memberships" element={<Plans />} />
 				<Route path="/retreats" element={<Retreats />} />
 				<Route path="/schedule" element={<Classes />} />
+				<Route path="/account" element={<Profile />} />
+
 
 			</Route>
 		</Routes>

@@ -69,6 +69,8 @@ export default function Nav() {
 						</div>
 						{isDropdownOpen && (
 							<div className="user-links-dropdown">
+								
+								<Link to='/account'>Account</Link>
 								<Link onClick={logoutHandler}>Logout</Link>
 							</div>
 						)}

@@ -64,16 +64,17 @@ module.exports.login = asyncHandler(async (req, res) => {
 			return res.status(401).json({ msg: "Authentication Failed" });
 		}
 
-		const { userId } = user;
+		const { userId, firstName, lastName, phoneNr } = user;
 		const jwtToken = jwt.sign(
 			{
 				email,
 				userId,
-				isAdmin,
+				isAdmin
+				
 			},
 			process.env.JWTSecret,
 			{
-				expiresIn: "1h",
+				expiresIn: "2h",
 			}
 		);
 
@@ -81,8 +82,12 @@ module.exports.login = asyncHandler(async (req, res) => {
 
 		return res.status(200).json({
 			accessToken: jwtToken,
+			email,
 			userId,
 			isAdmin,
+			firstName,
+			lastName,
+			phoneNr
 		});
 	} catch (err) {
 		return res.status(401).json({
@@ -107,9 +112,8 @@ module.exports.getUser = asyncHandler(async (req, res) => {
 		if (!verifyUser) {
 			return res.status(403).json({ msg: "User not found" });
 		} else {
-			const { firstName, lastName } = verifyUser;
 			return res.status(200).json({
-				msg: `User: ${firstName} ${lastName}`,
+				verifyUser
 			});
 		}
 	} catch (error) {
@@ -120,7 +124,6 @@ module.exports.getUser = asyncHandler(async (req, res) => {
 module.exports.getUsers = asyncHandler(async (req, res) => {
 	try {
 		const users = await User.find();
-		console.log(users);
 		if (!users || users.length === 0) {
 			return res.status(404).json({ msg: "No users found" });
 		}
@@ -168,6 +171,7 @@ module.exports.updateUser = asyncHandler(async (req, res) => {
 			user.lastName = req.body.lastName || user.lastName;
 			user.email = req.body.email || user.email;
 			user.phoneNr = req.body.phoneNr || user.phoneNr;
+			user.password = req.body.password || user.password;
 
 			if (req.body.password) {
 				user.password = req.body.password;
