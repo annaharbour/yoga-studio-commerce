@@ -20,11 +20,11 @@ function Profile() {
 	const [updateUser] = useUpdateUserMutation();
 
 	useEffect(() => {
-		setFirstName(userInfo.firstName);
-		setLastName(userInfo.lastName);
-		setEmail(userInfo.email);
-		setPhoneNr(userInfo.phoneNr);
-		setPassword(userInfo.password);
+		setFirstName(userInfo.firstName || "");
+		setLastName(userInfo.lastName || "");
+		setEmail(userInfo.email || "");
+		setPhoneNr(userInfo.phoneNr || "");
+		setPassword(userInfo.password || "");
 	}, [
 		userInfo.firstName,
 		userInfo.lastName,
