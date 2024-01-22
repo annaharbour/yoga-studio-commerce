@@ -61,7 +61,7 @@ module.exports.login = asyncHandler(async (req, res) => {
 		const isPasswordValid = await bcrypt.compare(password, user.password);
 
 		if (!isPasswordValid) {
-			return res.status(401).json({ msg: "Authentication Failed" });
+			return res.status(401).json({ msg: "Authentication failed - wrong password" });
 		}
 
 		const { userId, firstName, lastName, phoneNr } = user;
@@ -78,7 +78,7 @@ module.exports.login = asyncHandler(async (req, res) => {
 			}
 		);
 
-		res.cookie("accessToken", jwtToken, { httpOnly: true, maxAge: 3600000 });
+		res.cookie("accessToken", jwtToken, { httpOnly: true, maxAge: 36000000 });
 
 		return res.status(200).json({
 			accessToken: jwtToken,
@@ -163,6 +163,8 @@ module.exports.updateUser = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 
 	try {
+		console.log('Received Data:', req.body);
+
 		const user = await User.findOne({ userId: id });
 		if (!user) {
 			return res.status(403).json({ msg: "User not found" });
@@ -178,6 +180,8 @@ module.exports.updateUser = asyncHandler(async (req, res) => {
 			}
 
 			const updatedUser = await user.save();
+
+			console.log('Response:', res);  
 
 			res.status(200).json({
 				userId: updatedUser.userId,

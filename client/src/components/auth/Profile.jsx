@@ -1,57 +1,51 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-	useGetUserDetailsQuery,
-	useUpdateUserMutation,
-} from "../../slices/usersSlice";
+import { useUpdateUserMutation } from "../../slices/usersSlice";
 import { setCredentials } from "../../slices/authSlice";
 import { toast } from "react-toastify";
 
 function Profile() {
+	const { userInfo } = useSelector((state) => state.auth);
+
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [email, setEmail] = useState("");
 	const [phoneNr, setPhoneNr] = useState("");
-	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState("");
 	const dispatch = useDispatch();
 
-	const { userInfo } = useSelector((state) => state.auth);
-	const [updateUser] = useUpdateUserMutation();
+	const [updateUser, { isLoading }] = useUpdateUserMutation();
 
 	useEffect(() => {
-		setFirstName(userInfo.firstName || "");
-		setLastName(userInfo.lastName || "");
-		setEmail(userInfo.email || "");
-		setPhoneNr(userInfo.phoneNr || "");
-		setPassword(userInfo.password || "");
-	}, [
-		userInfo.firstName,
-		userInfo.lastName,
-		userInfo.phoneNr,
-		userInfo.email,
-		userInfo.password,
-	]);
+		if (userInfo) {
+			setFirstName(userInfo.firstName || "");
+			setLastName(userInfo.lastName || "");
+			setEmail(userInfo.email || "");
+			setPhoneNr(userInfo.phoneNr || "");
+		}
+	}, [userInfo, isLoading]);
 
 	const submitHandler = async (e) => {
 		e.preventDefault();
-		if (password !== confirmPassword) {
-			toast.error("Password do not match");
-		} else {
-			try {
-				const res = await updateUser({
-					_id: userInfo._id,
+		try {
+			const res = await updateUser(
+				{
+					userId: userInfo.userId,
 					firstName,
 					lastName,
 					email,
 					phoneNr,
-					password,
-				}).unwrap();
-				dispatch(setCredentials({ ...res }));
-				toast.success("Profile updated successfully");
-			} catch (err) {
-				toast.error(err?.data?.message || err.error);
-			}
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${userInfo.accessToken}`,
+					},
+				}
+			);
+
+			dispatch(setCredentials({ ...res.data }));
+			toast.success("Profile updated successfully");
+		} catch (err) {
+			toast.error(err?.data?.message || err.error);
 		}
 	};
 
@@ -96,26 +90,7 @@ function Profile() {
 					onChange={(e) => setPhoneNr(e.target.value)}
 					required
 				/>
-
-				<label htmlFor="password">Password:</label>
-				<input
-					type="password"
-					name="password"
-					id="password"
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-					required
-				/>
-
-				<label htmlFor="confirmPassword">Confirm Password:</label>
-				<input
-					type="password"
-					name="confirmPassword"
-					id="confirmPassword"
-					value={confirmPassword}
-					onChange={(e) => setConfirmPassword(e.target.value)}
-					required
-				/>
+				{isLoading && <div>'Loading...'</div>}
 				<button type="submit">Update Profile</button>
 			</form>
 		</div>

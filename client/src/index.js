@@ -13,6 +13,7 @@ import Plans from "./components/memberships/Plans";
 import Retreats from './components/schedule/Retreats'
 import Classes from "./components/schedule/Classes";
 import Profile from './components/auth/Profile'
+import PrivateRoute from "./components/auth/PrivateRoute";
 
 const router = (
 	<BrowserRouter>
@@ -24,9 +25,9 @@ const router = (
 				<Route path="/memberships" element={<Plans />} />
 				<Route path="/retreats" element={<Retreats />} />
 				<Route path="/schedule" element={<Classes />} />
-				<Route path="/account" element={<Profile />} />
-
-
+				<Route path="" element={<PrivateRoute />}>
+					<Route path="/account" element={<Profile />} />
+				</Route>
 			</Route>
 		</Routes>
 	</BrowserRouter>
