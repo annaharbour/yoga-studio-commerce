@@ -56,7 +56,7 @@ body {
 
 	a {
 		display: inline-block;
-		color: white;
+		color: #F2ECF6;
 		text-decoration: none;
 		text-align: center;
 	}
@@ -72,11 +72,6 @@ body {
 	.nav-text {
 		margin-top: 0.5rem;
 		font-size: 1.5rem;
-	}
-
-	.active-link {
-		color: red;
-		border-bottom: 4px solid green;
 	}
 
 	.user-links-dropdown {
@@ -200,6 +195,8 @@ h1 {
 @media (max-width: 1000px) {
 	.title {
 		font-size: 5rem;
+		text-shadow: 2px .5px .5px black;
+
 	}
 
 	.nav-text {

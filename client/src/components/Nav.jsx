@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { useLogoutMutation } from "../slices/usersSlice";
@@ -18,6 +18,8 @@ export default function Nav() {
 	const dispatch = useDispatch();
 	const { userInfo } = useSelector((state) => state.auth);
 	const [logoutCall] = useLogoutMutation();
+	const ref = useRef();
+
 
 	const [isDropdownOpen, setDropdownOpen] = useState(false);
 	const toggleDropdown = () => {
@@ -32,6 +34,16 @@ export default function Nav() {
 			toast.error(err?.data?.msg || err.message);
 		}
 	};
+
+	
+    useEffect(() => {
+		const handleClickOutside = (event) => {
+		  if (!ref?.current?.contains(event.target)) {
+			setDropdownOpen(false);
+		  }
+		};
+		document.addEventListener("mousedown", handleClickOutside);
+	  }, [ref]);
 
 	return (
 		<div className="nav">
@@ -71,7 +83,7 @@ export default function Nav() {
 				<li>
 					<div className="nav-item">
 						{userInfo ? (
-							<div onMouseEnter={toggleDropdown} onMouseLeave={toggleDropdown}>
+							<div onMouseEnter={toggleDropdown} onMouseLeave={toggleDropdown} ref={ref}>
 								<div
 									className={`user-links nav-icon ${
 										isDropdownOpen ? "active" : ""
