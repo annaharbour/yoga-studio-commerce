@@ -185,6 +185,20 @@ form {
 		border-width: 1px 1px 3px;
 		box-shadow: 0.1rem 0.1rem 0.1rem #333;
 	}
+
+	button:active {
+		cursor: pointer;
+		width: 100%;
+		padding: 1rem;
+		color: #fff;
+		background-color: #ffb74c;
+		font-size: 18px;
+		text-align: center;
+		border: none;
+		border-radius: 5rem;
+		border-width: 1px 1px 3px;
+		box-shadow: 0rem;
+	}
 }
 
 h1 {
