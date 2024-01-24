@@ -4,14 +4,14 @@ import { Link } from "react-router-dom";
 import { useLogoutMutation } from "../slices/usersSlice";
 import { logout } from "../slices/authSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {toast} from 'react-toastify'
 import {
 	faHouse,
 	faUser,
 	faCalendarDays,
-	faCaretDown,
-	faCaretUp,
 	faAddressCard,
 	faPlane,
+	faCaretDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 export default function Nav() {
@@ -29,59 +29,96 @@ export default function Nav() {
 			await logoutCall().unwrap();
 			dispatch(logout());
 		} catch (err) {
-			console.log(err);
+			toast.error(err?.data?.msg || err.message)
 		}
 	};
 
 	return (
 		<div className="nav">
 			<ul>
-				<Link to="/">
-					{" "}
-					<FontAwesomeIcon icon={faHouse} className="nav-icon" />
-					Home
-				</Link>
-				<Link to="/schedule">
-					<FontAwesomeIcon icon={faCalendarDays} className="nav-icon" />
-					Schedule
-				</Link>
-				<Link to="/memberships">
-					<FontAwesomeIcon icon={faAddressCard} className="nav-icon" />
-					Memberships
-				</Link>
-				<Link to="/retreats">
-					<FontAwesomeIcon icon={faPlane} className="nav-icon" />
-					Retreats
-				</Link>
-			</ul>
-			<div className="auth">
-				{userInfo ? (
-					<div className="dropdown-container">
-						<div
-							className={`user-links ${isDropdownOpen ? "active" : ""}`}
-							onClick={toggleDropdown}>
-							<FontAwesomeIcon icon={faUser} className="nav-icon" />
-
-							<FontAwesomeIcon
-								icon={!isDropdownOpen ? faCaretDown : faCaretUp}
-								className="nav-icon"
-							/>
+				<li>
+					<Link to="/">
+						<div className="nav-item">
+							<FontAwesomeIcon icon={faHouse} className="nav-icon" />
+							<span className="nav-text">Home</span>
 						</div>
-						{isDropdownOpen && (
-							<div className="user-links-dropdown">
-								
-								<Link className="dropdown-link" to='/account'>Account</Link>
-								<Link className="dropdown-link" onClick={logoutHandler}>Logout</Link>
+					</Link>
+				</li>
+				<li>
+					<Link to="/schedule">
+						<div className="nav-item">
+							<FontAwesomeIcon icon={faCalendarDays} className="nav-icon" />
+							<span className="nav-text">Schedule</span>
+						</div>
+					</Link>
+				</li>
+				<li>
+					<Link to="/memberships">
+						<div className="nav-item">
+							<FontAwesomeIcon icon={faAddressCard} className="nav-icon" />
+							<span className="nav-text">Memberships</span>
+						</div>
+					</Link>
+				</li>
+				<li>
+					<Link to="/retreats">
+						<div className="nav-item">
+							<FontAwesomeIcon icon={faPlane} className="nav-icon" />
+							<span className="nav-text">Retreats</span>
+						</div>
+					</Link>
+				</li>
+				<li>
+					<div className="nav-item">
+						{userInfo ? (
+							<div onMouseEnter={toggleDropdown} onMouseLeave={toggleDropdown}>
+								<div
+									className={`user-links nav-icon ${
+										isDropdownOpen ? "active" : ""
+									}`}
+									onClick={toggleDropdown}>
+									<FontAwesomeIcon icon={faUser} />
+									<span className="nav-text">
+										<FontAwesomeIcon icon={faCaretDown} />
+									</span>
+								</div>
+
+								{isDropdownOpen && (
+									<div className="user-links-dropdown">
+										<Link className="dropdown-link" to="/account">
+											Account
+										</Link>
+										<Link className="dropdown-link" onClick={logoutHandler}>
+											Logout
+										</Link>
+									</div>
+								)}
+							</div>
+						) : (
+							<div onMouseEnter={toggleDropdown} onMouseLeave={toggleDropdown}>
+								<div
+									className={`user-links nav-icon ${
+										isDropdownOpen ? "active" : ""
+									}`}
+									onClick={toggleDropdown}>
+									<FontAwesomeIcon icon={faUser} />
+									<span className="nav-text">
+										<FontAwesomeIcon icon={faCaretDown} />
+									</span>
+								</div>
+
+								{isDropdownOpen && (
+									<div className="user-links-dropdown">
+										<Link className="dropdown-link" to="/login">
+											Login
+										</Link>
+									</div>
+								)}
 							</div>
 						)}
 					</div>
-				) : (
-					<>
-						<FontAwesomeIcon icon={faUser} className="nav-icon" />
-						<Link to="/login">Sign In</Link>
-					</>
-				)}
-			</div>
+				</li>
+			</ul>
 		</div>
 	);
 }

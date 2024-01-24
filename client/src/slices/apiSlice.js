@@ -6,7 +6,6 @@ import { logout } from "./authSlice";
 const baseQuery = fetchBaseQuery({
 	baseUrl: BASE_URL,
 	prepareHeaders: (headers, { getState }) => {
-		console.log(getState())
 		if(getState().auth.userInfo !== null){
 		const token = getState().auth.userInfo.accessToken;
 		// If we have a token set in state, let's assume that we should be passing it.

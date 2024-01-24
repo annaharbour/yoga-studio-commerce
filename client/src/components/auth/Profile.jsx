@@ -50,6 +50,7 @@ function Profile() {
 	};
 
 	return (
+		<div className="content">
 		<div className="form">
 			<h1>Account</h1>
 			<form onSubmit={submitHandler}>
@@ -93,6 +94,7 @@ function Profile() {
 				{isLoading && <div>'Loading...'</div>}
 				<button type="submit">Update Profile</button>
 			</form>
+		</div>
 		</div>
 	);
 }
