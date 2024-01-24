@@ -78,8 +78,10 @@ export default function Nav() {
 									}`}
 									onClick={toggleDropdown}>
 									<FontAwesomeIcon icon={faUser} />
+
 									<span className="nav-text">
 										<FontAwesomeIcon icon={faCaretDown} />
+										
 									</span>
 								</div>
 

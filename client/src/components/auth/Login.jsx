@@ -65,6 +65,7 @@ function Login() {
 			</form>
 			<div className="auth-link">No account? <Link to='/register'>Sign up here</Link></div>
 		</div>
+
 	);
 }
 
