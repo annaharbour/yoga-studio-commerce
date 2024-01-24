@@ -1,7 +1,6 @@
 * {
 	margin: 0;
 	box-sizing: border-box;
-	
 }
 
 :root {
@@ -20,12 +19,11 @@ body {
 .App {
 	display: grid;
 	grid-template-rows: auto 1fr auto;
-	min-height: 100vh; 
-  }
-  
+	min-height: 100vh;
+}
 
 .nav {
-	position: fixed; 
+	position: fixed;
 	top: 0;
 	z-index: 1000;
 	width: 100%;
@@ -51,6 +49,11 @@ body {
 		cursor: pointer;
 		transition: transform 0.25s ease-in-out;
 	}
+
+	.nav-item:hover {
+		transform: scale(1.2);
+	}
+
 	a {
 		display: inline-block;
 		color: white;
@@ -71,16 +74,17 @@ body {
 		font-size: 1.5rem;
 	}
 
-	.nav-item:hover {
-		transform: scale(1.2);
+	.active-link {
+		color: red;
+		border-bottom: 4px solid green;
 	}
 
 	.user-links-dropdown {
 		border-radius: 1rem;
 		background-color: #292f31;
-		box-shadow: .2rem .2rem .2rem .2rem #333;
+		box-shadow: 0.2rem 0.2rem 0.2rem 0.2rem #333;
 		position: absolute;
-		z-index: 2000; 
+		z-index: 2000;
 		top: 100%;
 		left: -150%;
 		margin: auto;
@@ -194,9 +198,9 @@ h1 {
 }
 
 @media (max-width: 1000px) {
-.title {
-	font-size: 5rem;
-}
+	.title {
+		font-size: 5rem;
+	}
 
 	.nav-text {
 		display: none;

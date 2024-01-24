@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useLogoutMutation } from "../slices/usersSlice";
 import { logout } from "../slices/authSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {toast} from 'react-toastify'
+import { toast } from "react-toastify";
 import {
 	faHouse,
 	faUser,
@@ -29,7 +29,7 @@ export default function Nav() {
 			await logoutCall().unwrap();
 			dispatch(logout());
 		} catch (err) {
-			toast.error(err?.data?.msg || err.message)
+			toast.error(err?.data?.msg || err.message);
 		}
 	};
 
@@ -37,36 +37,36 @@ export default function Nav() {
 		<div className="nav">
 			<ul>
 				<li>
-					<Link to="/">
+					<NavLink to="/">
 						<div className="nav-item">
 							<FontAwesomeIcon icon={faHouse} className="nav-icon" />
 							<span className="nav-text">Home</span>
 						</div>
-					</Link>
+					</NavLink>
 				</li>
 				<li>
-					<Link to="/schedule">
+					<NavLink to="/schedule">
 						<div className="nav-item">
 							<FontAwesomeIcon icon={faCalendarDays} className="nav-icon" />
 							<span className="nav-text">Schedule</span>
 						</div>
-					</Link>
+					</NavLink>
 				</li>
 				<li>
-					<Link to="/memberships">
+					<NavLink to="/memberships">
 						<div className="nav-item">
 							<FontAwesomeIcon icon={faAddressCard} className="nav-icon" />
 							<span className="nav-text">Memberships</span>
 						</div>
-					</Link>
+					</NavLink>
 				</li>
 				<li>
-					<Link to="/retreats">
+					<NavLink to="/retreats">
 						<div className="nav-item">
 							<FontAwesomeIcon icon={faPlane} className="nav-icon" />
 							<span className="nav-text">Retreats</span>
 						</div>
-					</Link>
+					</NavLink>
 				</li>
 				<li>
 					<div className="nav-item">
@@ -81,18 +81,17 @@ export default function Nav() {
 
 									<span className="nav-text">
 										<FontAwesomeIcon icon={faCaretDown} />
-										
 									</span>
 								</div>
 
 								{isDropdownOpen && (
 									<div className="user-links-dropdown">
-										<Link className="dropdown-link" to="/account">
+										<NavLink className="dropdown-link" to="/account">
 											Account
-										</Link>
-										<Link className="dropdown-link" onClick={logoutHandler}>
+										</NavLink>
+										<NavLink className="dropdown-link" onClick={logoutHandler}>
 											Logout
-										</Link>
+										</NavLink>
 									</div>
 								)}
 							</div>
@@ -111,9 +110,9 @@ export default function Nav() {
 
 								{isDropdownOpen && (
 									<div className="user-links-dropdown">
-										<Link className="dropdown-link" to="/login">
+										<NavLink className="dropdown-link" to="/login">
 											Login
-										</Link>
+										</NavLink>
 									</div>
 								)}
 							</div>
