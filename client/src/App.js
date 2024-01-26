@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
   
   return (
-    <>
+    <div className='App'>
       
       <Nav/>
       <Outlet/>
@@ -18,7 +18,7 @@ function App() {
      />
       <Footer/>
      
-    </>
+    </div>
   );
 }
 

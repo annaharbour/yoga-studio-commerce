@@ -80,7 +80,7 @@ YogaClassSchema.virtual("description").get(function () {
 		Yin: "A slow-paced style that involves holding passive poses for an extended duration, targeting connective tissues and promoting deep relaxation and flexibility.",
 	};
 
-	return this.customDescription || descriptions[this.classSchema] || "";
+	return this.customDescription || descriptions[this.classType] || "";
 });
 
 YogaClassSchema.virtual("classId").get(function () {

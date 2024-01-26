@@ -10,7 +10,7 @@ import {
 	faUser,
 	faCalendarDays,
 	faAddressCard,
-	faPlane,
+	// faPlane,
 	faCaretDown,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -72,14 +72,14 @@ export default function Nav() {
 						</div>
 					</NavLink>
 				</li>
-				<li>
+				{/* <li>
 					<NavLink to="/retreats">
 						<div className="nav-item">
 							<FontAwesomeIcon icon={faPlane} className="nav-icon" />
 							<span className="nav-text">Retreats</span>
 						</div>
 					</NavLink>
-				</li>
+				</li> */}
 				<li>
 					<div className="nav-item">
 						{userInfo ? (
