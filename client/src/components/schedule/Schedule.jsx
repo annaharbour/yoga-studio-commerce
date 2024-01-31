@@ -2,22 +2,29 @@ import { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import { useGetClassesQuery } from "../../slices/scheduleSlice";
 
-
 export default function Schedule() {
-	const [selectedDate, setSelectedDate] = useState(new Date());
-	// const [classTypes, setClassTypes] = useState([]);
-
 	const { data, isLoading, error } = useGetClassesQuery();
+	const [selectedDate, setSelectedDate] = useState(new Date());
+	const [classType, setClassType] = useState([]);
 
-	if (isLoading) {
-		console.log("Loading...");
-	  } else if (error) {
-		console.error("Error loading classes:", error);
-	  } else {
-		console.log("Loaded data:", data);
-	  }
-	
-	// Event Handlers for Day, Month, Year
+	const classes = data?.events || [];
+
+	// Event Handlers for Day, Month, Year, Class Types
+	const classTypes = [
+		"Power",
+		"Nidra",
+		"Vinyasa",
+		"Hatha",
+		"Iyengar",
+		"Kundalini",
+		"Ashtanga",
+		"Bikram",
+		"Yin",
+		"Workshop",
+		"Yoga Teacher Certification",
+		"Yoga Retreat",
+	];
+
 	const generateDaysOptions = () => {
 		const daysInMonth = new Date(
 			selectedDate.getFullYear(),
@@ -98,11 +105,11 @@ export default function Schedule() {
 					<label htmlFor="search">Filter</label>
 					<select name="class-type">
 						<option value="">All Classes</option>
-						{/* {classTypes.map((classType) => (
+						{classTypes.map((classType) => (
 							<option key={classType} value={classType}>
 								{classType}
 							</option>
-						))} */}
+						))}
 					</select>
 				</div>
 
@@ -148,8 +155,16 @@ export default function Schedule() {
 			/>
 			<div>Selected Date: {selectedDate.toLocaleDateString()}</div>
 			<div>Render classes for this day here</div>
-									
-						
+
+			{isLoading ? (
+				<div>Loading</div>
+			) : (
+				<>
+					{classes.map((c) => (
+						<div key={c._id}>{c.classType}</div>
+					))}
+				</>
+			)}
 		</div>
 	);
 }
