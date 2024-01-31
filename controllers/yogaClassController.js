@@ -5,45 +5,104 @@ const asyncHandler = require("express-async-handler");
 // Get calendar of bookable classes
 // Public Route
 // @route GET /classes
+// module.exports.getClasses = asyncHandler(async (req, res) => {
+// 	try {
+// 		const events = await YogaClass.find();
+// 		console.log(events);
+// 		if (!events || events.length === 0) {
+// 			return res.status(404).json({ msg: "No classes found" });
+// 		}
+
+// 		const eventList = events.map((event) => {
+// 			const {
+// 				classType,
+// 				start,
+// 				end,
+// 				price,
+// 				location,
+// 				spotsRemaining,
+// 				maxCapacity,
+// 				studentsSignedUp,
+// 				_id
+// 			} = event;
+// 			return {
+// 				classType,
+// 				start,
+// 				end,
+// 				price,
+// 				location,
+// 				spotsRemaining,
+// 				maxCapacity,
+// 				studentsSignedUp,
+// 				_id
+// 			};
+// 		});
+// 		return res.status(200).json({
+// 			events: eventList,
+// 		});
+// 	} catch (err) {
+// 		return res.status(401).json({ msg: err.message });
+// 	}
+// });
+
+// Get calendar of bookable classes
+// Public Route
+// @route GET /classes
 module.exports.getClasses = asyncHandler(async (req, res) => {
 	try {
-		const events = await YogaClass.find();
-		console.log(events);
-		if (!events || events.length === 0) {
-			return res.status(404).json({ msg: "No classes found" });
-		}
-
-		const eventList = events.map((event) => {
-			const {
-				classType,
-				start,
-				end,
-				price,
-				location,
-				spotsRemaining,
-				maxCapacity,
-				studentsSignedUp,
-				_id
-			} = event;
-			return {
-				classType,
-				start,
-				end,
-				price,
-				location,
-				spotsRemaining,
-				maxCapacity,
-				studentsSignedUp,
-				_id
-			};
-		});
-		return res.status(200).json({
-			events: eventList,
-		});
+	  // Extract parameters from the query
+	  const { date, classType } = req.query;
+  
+	  // Build the filter object based on the presence of parameters
+	  const filter = {};
+	  if (date) {
+		filter.start = { $gte: new Date(date), $lt: new Date(date).setDate(new Date(date).getDate() + 1) };
+	  }
+	  if (classType) {
+		filter.classType = classType;
+	  }
+  
+	  // Use the filter object in the query
+	  const events = await YogaClass.find(filter);
+  
+	  if (!events || events.length === 0) {
+		return res.status(404).json({ msg: "No classes found" });
+	  }
+  
+	  const eventList = events.map((event) => {
+		const {
+		  classType,
+		  start,
+		  end,
+		  price,
+		  location,
+		  spotsRemaining,
+		  maxCapacity,
+		  studentsSignedUp,
+		  _id
+		} = event;
+		return {
+		  classType,
+		  start,
+		  end,
+		  price,
+		  location,
+		  spotsRemaining,
+		  maxCapacity,
+		  studentsSignedUp,
+		  _id
+		};
+	  });
+  
+	  return res.status(200).json({
+		events: eventList,
+	  });
 	} catch (err) {
-		return res.status(401).json({ msg: err.message });
+	  return res.status(401).json({ msg: err.message });
 	}
-});
+  });
+  
+  
 
 // Create New Class
 // Admin / Private Route

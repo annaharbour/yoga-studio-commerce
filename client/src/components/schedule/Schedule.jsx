@@ -1,11 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Calendar from "react-calendar";
 import { useGetClassesQuery } from "../../slices/scheduleSlice";
 
 export default function Schedule() {
-	const { data, isLoading, error } = useGetClassesQuery();
 	const [selectedDate, setSelectedDate] = useState(new Date());
-	const [classType, setClassType] = useState([]);
+	const [selectedClassType, setSelectedClassType] = useState([]);
+
+	const { data, isLoading } = useGetClassesQuery({
+		date: selectedDate,
+		classType: selectedClassType,
+	});
 
 	const classes = data?.events || [];
 
@@ -62,6 +66,11 @@ export default function Schedule() {
 	const getCurrentYear = new Date().getFullYear();
 	const years = [getCurrentYear, getCurrentYear + 1, getCurrentYear + 2];
 
+	const handleClassTypeChange = (e) => {
+		const selectedClassType = e.target.value.toString();
+		setSelectedClassType(selectedClassType);
+	};
+
 	const handleMonthChange = (e) => {
 		const selectedMonth = e.target.value;
 		const updatedDate = new Date(selectedDate);
@@ -103,7 +112,7 @@ export default function Schedule() {
 
 				<div>
 					<label htmlFor="search">Filter</label>
-					<select name="class-type">
+					<select name="class-type" onChange={handleClassTypeChange}>
 						<option value="">All Classes</option>
 						{classTypes.map((classType) => (
 							<option key={classType} value={classType}>
