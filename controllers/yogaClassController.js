@@ -16,8 +16,8 @@ module.exports.getClasses = asyncHandler(async (req, res) => {
 		const eventList = events.map((event) => {
 			const {
 				classType,
-				startTime,
-				endTime,
+				start,
+				end,
 				price,
 				location,
 				spotsRemaining,
@@ -27,8 +27,8 @@ module.exports.getClasses = asyncHandler(async (req, res) => {
 			} = event;
 			return {
 				classType,
-				startTime,
-				endTime,
+				start,
+				end,
 				price,
 				location,
 				spotsRemaining,
@@ -51,8 +51,8 @@ module.exports.getClasses = asyncHandler(async (req, res) => {
 module.exports.createClass = asyncHandler(async (req, res) => {
 	const {
 		classType,
-		startTime,
-		endTime,
+		start,
+		end,
 		price,
 		location,
 		maxCapacity
@@ -60,8 +60,8 @@ module.exports.createClass = asyncHandler(async (req, res) => {
 
 	if (
 		!classType ||
-		!startTime ||
-		!endTime ||
+		!start ||
+		!end ||
 		!price ||
 		!location ||
 		!maxCapacity
@@ -72,8 +72,8 @@ module.exports.createClass = asyncHandler(async (req, res) => {
 	try {
 		const newClass = new YogaClass({
 			classType,
-			startTime,
-			endTime,
+			start,
+			end,
 			price,
 			location,
 			maxCapacity,
@@ -113,8 +113,8 @@ module.exports.updateClassById = asyncHandler(async (req, res) => {
 			return res.status(403).json({ msg: "Class not found" });
 		} else {
 			yogaClass.classType = req.body.classType || yogaClass.classType;
-			yogaClass.startTime = req.body.startTime || yogaClass.startTime;
-			yogaClass.endTime = req.body.endTime || yogaClass.endTime;
+			yogaClass.start = req.body.start || yogaClass.start;
+			yogaClass.end = req.body.end || yogaClass.end;
 			yogaClass.price = req.body.price || yogaClass.price;
 			yogaClass.location = req.body.location || yogaClass.location;
 			yogaClass.maxCapacity = req.body.maxCapacity || yogaClass.maxCapacity;
@@ -128,8 +128,8 @@ module.exports.updateClassById = asyncHandler(async (req, res) => {
 			res.status(200).json({
 				
 				classType: updatedYogaClass.classType,
-				startTime: updatedYogaClass.startTime,
-				endTime: updatedYogaClass.endTime,
+				start: updatedYogaClass.start,
+				end: updatedYogaClass.end,
 				price: updatedYogaClass.price,
 				location: updatedYogaClass.location,
 				maxCapacity: updatedYogaClass.maxCapacity,

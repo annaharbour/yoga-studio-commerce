@@ -19,11 +19,11 @@ const YogaClassSchema = new Schema({
 			"Yoga Retreat"
 		],
 	},
-	startTime: {
+	start: {
 		type: Date,
 		required: true,
 	},
-	endTime: {
+	end: {
 		type: Date,
 		required: true,
 	},
