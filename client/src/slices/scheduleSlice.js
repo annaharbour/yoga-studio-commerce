@@ -1,13 +1,14 @@
-import { SCHEDULE_URL } from "../constants";
+import { SCHEDULE_URL } from "../common/constants";
 import { apiSlice } from "./apiSlice";
+
 export const scheduleApiSlice = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
 		getClasses: builder.query({
-			query: ({ keyword }) => ({
+			query: () => ({
 				url: SCHEDULE_URL,
-				params: {
-					keyword,
-				},
+				// params: {
+				// 	keyword,
+				// },
 			}),
 			keepUnusedDataFor: 5,
 			providesTags: ["YogaClasses"],
@@ -25,7 +26,7 @@ export const scheduleApiSlice = apiSlice.injectEndpoints({
 			}),
 			invalidatesTags: ["YogaClass"],
 		}),
-		updateProduct: builder.mutation({
+		updateClassById: builder.mutation({
 			query: (data) => ({
 				url: `${SCHEDULE_URL}/${data.classId}`,
 				method: "PUT",
@@ -42,4 +43,4 @@ export const scheduleApiSlice = apiSlice.injectEndpoints({
 	}),
 });
 
-export const {getClasses, getClassById, createClass, updateProduct} = scheduleApiSlice;
+export const {useGetClassesQuery, useGetClassByIdQuery, useCreateClassMutation, useUpdateClassByIdMutation} = scheduleApiSlice;

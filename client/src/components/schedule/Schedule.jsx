@@ -1,9 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Calendar from "react-calendar";
+import { useGetClassesQuery } from "../../slices/scheduleSlice";
+
 
 export default function Schedule() {
 	const [selectedDate, setSelectedDate] = useState(new Date());
+	// const [classTypes, setClassTypes] = useState([]);
 
+	const { data, isLoading, error } = useGetClassesQuery();
+
+	if (isLoading) {
+		console.log("Loading...");
+	  } else if (error) {
+		console.error("Error loading classes:", error);
+	  } else {
+		console.log("Loaded data:", data);
+	  }
+	
 	// Event Handlers for Day, Month, Year
 	const generateDaysOptions = () => {
 		const daysInMonth = new Date(
@@ -77,7 +90,6 @@ export default function Schedule() {
 			<h1>Schedule</h1>
 
 			<form className="schedule-filter" onSubmit={onSearch}>
-
 				<div>
 					<input className="search" placeholder="Search for classes"></input>
 				</div>
@@ -85,9 +97,12 @@ export default function Schedule() {
 				<div>
 					<label htmlFor="search">Filter</label>
 					<select name="class-type">
-						<option value="ashtanga">Ashtanga</option>
-						<option value="vinyasa">Vinyasa</option>
-						<option value="power">Power</option>
+						<option value="">All Classes</option>
+						{/* {classTypes.map((classType) => (
+							<option key={classType} value={classType}>
+								{classType}
+							</option>
+						))} */}
 					</select>
 				</div>
 
@@ -119,8 +134,6 @@ export default function Schedule() {
 							</option>
 						))}
 					</select>
-
-					{/* Select range */}
 				</div>
 			</form>
 			<Calendar
@@ -135,6 +148,8 @@ export default function Schedule() {
 			/>
 			<div>Selected Date: {selectedDate.toLocaleDateString()}</div>
 			<div>Render classes for this day here</div>
+									
+						
 		</div>
 	);
 }
