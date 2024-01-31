@@ -91,7 +91,7 @@ function Profile() {
 					required
 				/>
 				{isLoading && <div>'Loading...'</div>}
-				<button type="submit">Update Profile</button>
+				<button className="submit-button" type="submit">Update Profile</button>
 			</form>
 		</div>
 	);

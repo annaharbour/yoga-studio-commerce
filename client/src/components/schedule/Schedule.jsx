@@ -25,18 +25,18 @@ export default function Schedule() {
 	};
 
 	const months = [
-		"January",
-		"February",
-		"March",
-		"April",
-		"May",
-		"June",
-		"July",
-		"August",
-		"September",
-		"October",
-		"November",
-		"December",
+		"01",
+		"02",
+		"03",
+		"04",
+		"05",
+		"06",
+		"07",
+		"08",
+		"09",
+		"10",
+		"11",
+		"12",
 	];
 
 	const getCurrentYear = new Date().getFullYear();
@@ -76,10 +76,10 @@ export default function Schedule() {
 		<div className="form">
 			<h1>Schedule</h1>
 
-			<form onSubmit={onSearch}>
+			<form className="schedule-filter" onSubmit={onSearch}>
+
 				<div>
-					<label htmlFor="search">Search</label>
-					<input placeholder="Search for classes"></input>
+					<input className="search" placeholder="Search for classes"></input>
 				</div>
 
 				<div>
@@ -120,18 +120,19 @@ export default function Schedule() {
 						))}
 					</select>
 
-          {/* Select range */}
+					{/* Select range */}
 				</div>
 			</form>
 			<Calendar
 				onChange={handleDateChange}
-        view="month"
+				view="month"
 				value={selectedDate}
 				minDate={new Date()}
 				maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 2))}
 				prev2Label={null}
 				next2Label={null}
-        className="react-calendar" 			/>
+				className="schedule"
+			/>
 			<div>Selected Date: {selectedDate.toLocaleDateString()}</div>
 			<div>Render classes for this day here</div>
 		</div>

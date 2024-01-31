@@ -106,7 +106,7 @@ function Register() {
 					onChange={(e) => setConfirmPassword(e.target.value)}
 					required
 				/>
-				<button type="submit">Sign Up</button>
+				<button className="submit-button" type="submit">Sign Up</button>
 			</form>
 			<div className="auth-link">No account? <Link to='/login'>Sign in here</Link></div>
 
