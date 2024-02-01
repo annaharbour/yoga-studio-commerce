@@ -6,10 +6,20 @@ export default function Schedule() {
 	const [selectedDate, setSelectedDate] = useState(new Date());
 	const [selectedClassType, setSelectedClassType] = useState([]);
 
-	const { data, isLoading } = useGetClassesQuery({
-		date: selectedDate,
-		classType: selectedClassType,
+	const { data, isLoading, error } = useGetClassesQuery({
+		date: selectedDate.toISOString(),
+		classType: selectedClassType.toString() || "",
 	});
+
+
+	if (isLoading) {
+		console.log("Loading...");
+	  } else if (error) {
+		console.error("Error loading classes:", error);
+	  } else {
+		console.log("Loaded data:", data);
+		// Process your data or update state here
+	  }
 
 	const classes = data?.events || [];
 
@@ -105,6 +115,18 @@ export default function Schedule() {
 		<div className="form">
 			<h1>Schedule</h1>
 
+			
+			<Calendar
+				onChange={handleDateChange}
+				view="month"
+				value={selectedDate}
+				minDate={new Date()}
+				maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 2))}
+				prev2Label={null}
+				next2Label={null}
+				className="schedule"
+			/>
+			<div>Selected Date: {selectedDate.toLocaleDateString()}</div>
 			<form className="schedule-filter" onSubmit={onSearch}>
 				<div>
 					<input className="search" placeholder="Search for classes"></input>
@@ -152,17 +174,6 @@ export default function Schedule() {
 					</select>
 				</div>
 			</form>
-			<Calendar
-				onChange={handleDateChange}
-				view="month"
-				value={selectedDate}
-				minDate={new Date()}
-				maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 2))}
-				prev2Label={null}
-				next2Label={null}
-				className="schedule"
-			/>
-			<div>Selected Date: {selectedDate.toLocaleDateString()}</div>
 			<div>Render classes for this day here</div>
 
 			{isLoading ? (
