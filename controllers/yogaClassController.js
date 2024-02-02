@@ -47,39 +47,39 @@ const asyncHandler = require("express-async-handler");
 // });
 
 module.exports.getClasses = asyncHandler(async (req, res) => {
-	try {
-		const { date, classType } = req.query;
-	
-		// Parse the date string into a Date object
-		const parsedDate = new Date(date);
-		
-		if (isNaN(parsedDate)) {
-			return res.status(400).json({ error: "Invalid date format" });
-		  }
+try {
+    const { date, selectedClassType } = req.query;
 
-		const utcDate = new Date(parsedDate.toISOString());
+    const parsedDate = new Date(date);
 
-		console.log(utcDate)
-		console.log(classType)
+    const year = parsedDate.getFullYear();
+    const month = parsedDate.getMonth();
+    const day = parsedDate.getDate();
 
-		// Build query conditions based on parsedDate and classType
-		const eventList = await YogaClass.find({ start: utcDate, classType: classType })
-		.populate("start")
-		.sort({ start: "desc" });
-  
-	  if (!eventList || eventList.length === 0) {
-		console.log("No classes found for the selected date and class type");
-		return res.status(404).json({ error: "No classes found for the selected date and class type" });
-	  }
-  
-	  res.json({ eventList });
-	} catch (error) {
-	  console.error(error);
-	  res.status(500).json({ error: "Internal Server Error" });
-	}
-  });
-  
-  
+    const queryConditions = {
+        start: {
+            $gte: new Date(year, month, day),
+            $lt: new Date(year, month, day + 1),
+        },
+    };
+
+    if (selectedClassType) {
+        queryConditions.classType = selectedClassType;
+    }
+
+    const eventList = await YogaClass.find(queryConditions).sort({ start: "desc" });
+
+    if (!eventList || eventList.length === 0) {
+        console.log("No classes found for the selected date and class type");
+        return res.status(404).json({ error: "No classes found for the selected date and class type" });
+    }
+
+    res.json({ eventList });
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+}
+  });  
 
 // Create New Class
 // Admin / Private Route

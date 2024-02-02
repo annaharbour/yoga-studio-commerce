@@ -10,8 +10,6 @@ export default function Schedule() {
 		date: selectedDate.toISOString(),
 		...(selectedClassType.length > 0 && { classType: selectedClassType }),
 	});
-	console.log(selectedDate.toISOString());
-	console.log(selectedClassType.toString());
 
 	if (isLoading) {
 		console.log("Loading...");
@@ -189,11 +187,10 @@ export default function Schedule() {
 				<div>Loading</div>
 			) : (
 				<>
-					{data?.events.map((c) => (
+					{classes && classes.map((c) => (				
 						<div key={c._id}>
 							<p>Class Type: {c.classType}</p>
-							<p>Start Time: {new Date(c.start).toLocaleTimeString()}</p>
-							{/* Add more information as needed */}
+							<p>Start Time: {new Date(c.start).toLocaleTimeString()}</p> 
 						</div>
 					))}
 				</>
