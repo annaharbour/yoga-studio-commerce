@@ -5,45 +5,80 @@ const asyncHandler = require("express-async-handler");
 // Get calendar of bookable classes
 // Public Route
 // @route GET /classes
+
+// module.exports.getClasses = asyncHandler(async (req, res) => {
+// 	try {
+// 		const events = await YogaClass.find();
+// 		console.log(events);
+// 		if (!events || events.length === 0) {
+// 			return res.status(404).json({ msg: "No classes found" });
+// 		}
+
+// 		const eventList = events.map((event) => {
+// 			const {
+// 				classType,
+// 				start,
+// 				end,
+// 				price,
+// 				location,
+// 				spotsRemaining,
+// 				maxCapacity,
+// 				studentsSignedUp,
+// 				_id
+// 			} = event;
+// 			return {
+// 				classType,
+// 				start,
+// 				end,
+// 				price,
+// 				location,
+// 				spotsRemaining,
+// 				maxCapacity,
+// 				studentsSignedUp,
+// 				_id
+// 			};
+// 		});
+// 		return res.status(200).json({
+// 			events: eventList,
+// 		});
+// 	} catch (err) {
+// 		return res.status(401).json({ msg: err.message });
+// 	}
+// });
+
 module.exports.getClasses = asyncHandler(async (req, res) => {
 	try {
-		const events = await YogaClass.find();
-		console.log(events);
-		if (!events || events.length === 0) {
-			return res.status(404).json({ msg: "No classes found" });
-		}
+		const { date, classType } = req.query;
+	
+		// Parse the date string into a Date object
+		const parsedDate = new Date(date);
+		
+		if (isNaN(parsedDate)) {
+			return res.status(400).json({ error: "Invalid date format" });
+		  }
 
-		const eventList = events.map((event) => {
-			const {
-				classType,
-				start,
-				end,
-				price,
-				location,
-				spotsRemaining,
-				maxCapacity,
-				studentsSignedUp,
-				_id
-			} = event;
-			return {
-				classType,
-				start,
-				end,
-				price,
-				location,
-				spotsRemaining,
-				maxCapacity,
-				studentsSignedUp,
-				_id
-			};
-		});
-		return res.status(200).json({
-			events: eventList,
-		});
-	} catch (err) {
-		return res.status(401).json({ msg: err.message });
+		const utcDate = new Date(parsedDate.toISOString());
+
+		console.log(utcDate)
+		console.log(classType)
+
+		// Build query conditions based on parsedDate and classType
+		const eventList = await YogaClass.find({ start: utcDate, classType: classType })
+		.populate("start")
+		.sort({ start: "desc" });
+  
+	  if (!eventList || eventList.length === 0) {
+		console.log("No classes found for the selected date and class type");
+		return res.status(404).json({ error: "No classes found for the selected date and class type" });
+	  }
+  
+	  res.json({ eventList });
+	} catch (error) {
+	  console.error(error);
+	  res.status(500).json({ error: "Internal Server Error" });
 	}
-});
+  });
+  
   
 
 // Create New Class
@@ -83,7 +118,7 @@ module.exports.createClass = asyncHandler(async (req, res) => {
 
 		await newClass.save();
 
-		return res.status(201).json({ msg: "New yoga class created" });
+		return res.status(201).json({ newClass });
 	} catch (err) {
 		console.error("Error creating class:", err);
 		return res.status(500).json({ error: "Internal server error" });

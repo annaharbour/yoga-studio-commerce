@@ -64,7 +64,7 @@ module.exports.login = asyncHandler(async (req, res) => {
 			return res.status(401).json({ msg: "Authentication failed - wrong password" });
 		}
 
-		const { userId, firstName, lastName, phoneNr } = user;
+		const { userId, firstName, lastName, phoneNr, isAdmin } = user;
 		const jwtToken = jwt.sign(
 			{
 				email,
@@ -77,7 +77,6 @@ module.exports.login = asyncHandler(async (req, res) => {
 				expiresIn: "2h",
 			}
 		);
-
 		res.cookie("accessToken", jwtToken, { httpOnly: true, maxAge: 36000000 });
 
 		return res.status(200).json({

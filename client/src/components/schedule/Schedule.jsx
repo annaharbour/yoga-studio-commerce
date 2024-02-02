@@ -8,18 +8,18 @@ export default function Schedule() {
 
 	const { data, isLoading, error } = useGetClassesQuery({
 		date: selectedDate.toISOString(),
-		classType: selectedClassType.toString() || "",
+		...(selectedClassType.length > 0 && { classType: selectedClassType }),
 	});
-
+	console.log(selectedDate.toISOString());
+	console.log(selectedClassType.toString());
 
 	if (isLoading) {
 		console.log("Loading...");
-	  } else if (error) {
+	} else if (error) {
 		console.error("Error loading classes:", error);
-	  } else {
+	} else {
 		console.log("Loaded data:", data);
-		// Process your data or update state here
-	  }
+	}
 
 	const classes = data?.events || [];
 
@@ -77,11 +77,13 @@ export default function Schedule() {
 	const years = [getCurrentYear, getCurrentYear + 1, getCurrentYear + 2];
 
 	const handleClassTypeChange = (e) => {
-		const selectedClassType = e.target.value.toString();
+		e.preventDefault();
+		const selectedClassType = e.target.value;
 		setSelectedClassType(selectedClassType);
 	};
 
 	const handleMonthChange = (e) => {
+		e.preventDefault();
 		const selectedMonth = e.target.value;
 		const updatedDate = new Date(selectedDate);
 		updatedDate.setMonth(months.indexOf(selectedMonth));
@@ -89,6 +91,7 @@ export default function Schedule() {
 	};
 
 	const handleDayChange = (e) => {
+		e.preventDefault();
 		const selectedDay = e.target.value;
 		const updatedDate = new Date(selectedDate);
 		updatedDate.setDate(selectedDay);
@@ -96,13 +99,15 @@ export default function Schedule() {
 	};
 
 	const handleYearChange = (e) => {
+		e.preventDefault();
 		const selectedYear = e.target.value;
 		const updatedDate = new Date(selectedDate);
 		updatedDate.setFullYear(selectedYear);
 		setSelectedDate(updatedDate);
 	};
 
-	const handleDateChange = (date) => {
+	const handleDateChange = (e, date) => {
+		e.preventDefault();
 		setSelectedDate(date);
 	};
 
@@ -112,10 +117,9 @@ export default function Schedule() {
 	};
 
 	return (
-		<div className="form">
+		<div className="form" onSubmit={onSearch}>
 			<h1>Schedule</h1>
 
-			
 			<Calendar
 				onChange={handleDateChange}
 				view="month"
@@ -126,7 +130,7 @@ export default function Schedule() {
 				next2Label={null}
 				className="schedule"
 			/>
-			<div>Selected Date: {selectedDate.toLocaleDateString()}</div>
+
 			<form className="schedule-filter" onSubmit={onSearch}>
 				<div>
 					<input className="search" placeholder="Search for classes"></input>
@@ -134,7 +138,10 @@ export default function Schedule() {
 
 				<div>
 					<label htmlFor="search">Filter</label>
-					<select name="class-type" onChange={handleClassTypeChange}>
+					<select
+						name="class-type"
+						onChange={handleClassTypeChange}
+						value={selectedClassType}>
 						<option value="">All Classes</option>
 						{classTypes.map((classType) => (
 							<option key={classType} value={classType}>
@@ -173,6 +180,8 @@ export default function Schedule() {
 						))}
 					</select>
 				</div>
+				<button type="submit">Search</button>
+
 			</form>
 			<div>Render classes for this day here</div>
 
@@ -180,8 +189,12 @@ export default function Schedule() {
 				<div>Loading</div>
 			) : (
 				<>
-					{classes.map((c) => (
-						<div key={c._id}>{c.classType}</div>
+					{data?.events.map((c) => (
+						<div key={c._id}>
+							<p>Class Type: {c.classType}</p>
+							<p>Start Time: {new Date(c.start).toLocaleTimeString()}</p>
+							{/* Add more information as needed */}
+						</div>
 					))}
 				</>
 			)}
