@@ -4,22 +4,14 @@ import { useGetClassesQuery } from "../../slices/scheduleSlice";
 
 export default function Schedule() {
 	const [selectedDate, setSelectedDate] = useState(new Date());
-	const [selectedClassType, setSelectedClassType] = useState([]);
+	const [selectedClassType, setSelectedClassType] = useState("");
 
-	const { data, isLoading, error } = useGetClassesQuery({
+	const { data, isLoading, error, refetch } = useGetClassesQuery({
 		date: selectedDate.toISOString(),
 		...(selectedClassType.length > 0 && { classType: selectedClassType }),
 	});
 
-	if (isLoading) {
-		console.log("Loading...");
-	} else if (error) {
-		console.error("Error loading classes:", error);
-	} else {
-		console.log("Loaded data:", data);
-	}
-
-	const classes = data?.events || [];
+	const classes = data?.eventList || [];
 
 	// Event Handlers for Day, Month, Year, Class Types
 	const classTypes = [
@@ -109,13 +101,18 @@ export default function Schedule() {
 		setSelectedDate(date);
 	};
 
-	const onSearch = (e) => {
+	const onSearch = async (e) => {
 		e.preventDefault();
-		console.log("Search");
+		try {
+			// Fetch data here
+			await refetch(); // Assuming refetch is a function from useGetClassesQuery
+		} catch (error) {
+			console.error("Error loading classes:", error);
+		}
 	};
 
 	return (
-		<div className="form" onSubmit={onSearch}>
+		<div className="form">
 			<h1>Schedule</h1>
 
 			<Calendar
@@ -187,11 +184,16 @@ export default function Schedule() {
 				<div>Loading</div>
 			) : (
 				<>
-					{classes && classes.map((c) => (				
+					{classes.length === 0 ? (
+						<p>
+							No classes found for the selected date and type.
+						</p>
+					) : ( 
+						classes.map((c) => (				
 						<div key={c._id}>
 							<p>Class Type: {c.classType}</p>
 							<p>Start Time: {new Date(c.start).toLocaleTimeString()}</p> 
-						</div>
+						</div>)
 					))}
 				</>
 			)}

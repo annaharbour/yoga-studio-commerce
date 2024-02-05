@@ -6,46 +6,6 @@ const asyncHandler = require("express-async-handler");
 // Public Route
 // @route GET /classes
 
-// module.exports.getClasses = asyncHandler(async (req, res) => {
-// 	try {
-// 		const events = await YogaClass.find();
-// 		console.log(events);
-// 		if (!events || events.length === 0) {
-// 			return res.status(404).json({ msg: "No classes found" });
-// 		}
-
-// 		const eventList = events.map((event) => {
-// 			const {
-// 				classType,
-// 				start,
-// 				end,
-// 				price,
-// 				location,
-// 				spotsRemaining,
-// 				maxCapacity,
-// 				studentsSignedUp,
-// 				_id
-// 			} = event;
-// 			return {
-// 				classType,
-// 				start,
-// 				end,
-// 				price,
-// 				location,
-// 				spotsRemaining,
-// 				maxCapacity,
-// 				studentsSignedUp,
-// 				_id
-// 			};
-// 		});
-// 		return res.status(200).json({
-// 			events: eventList,
-// 		});
-// 	} catch (err) {
-// 		return res.status(401).json({ msg: err.message });
-// 	}
-// });
-
 module.exports.getClasses = asyncHandler(async (req, res) => {
 try {
     const { date, selectedClassType } = req.query;
