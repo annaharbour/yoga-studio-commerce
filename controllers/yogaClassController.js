@@ -1,5 +1,5 @@
 const YogaClass = require("../models/YogaClassModel");
-const Membership = require("../models/MembershipModel")
+const Membership = require("../models/MembershipModel");
 const asyncHandler = require("express-async-handler");
 
 // Get calendar of bookable classes
@@ -7,61 +7,52 @@ const asyncHandler = require("express-async-handler");
 // @route GET /classes
 
 module.exports.getClasses = asyncHandler(async (req, res) => {
-try {
-    const { date, selectedClassType } = req.query;
+	try {
+		const { date, classTypes } = req.query;
 
-    const parsedDate = new Date(date);
+		const parsedDate = new Date(Date.parse(date));
 
-    const year = parsedDate.getFullYear();
-    const month = parsedDate.getMonth();
-    const day = parsedDate.getDate();
+		const year = parsedDate.getFullYear();
+		const month = parsedDate.getMonth();
+		const day = parsedDate.getDate();
 
-    const queryConditions = {
-        start: {
-            $gte: new Date(year, month, day),
-            $lt: new Date(year, month, day + 1),
-        },
-    };
+		const queryConditions = {
+			start: {
+				$gte: new Date(year, month, day),
+				$lt: new Date(year, month, day + 1),
+			},
+		};
 
-    if (selectedClassType) {
-        queryConditions.classType = selectedClassType;
-    }
+		if (classTypes && classTypes.length > 0) {
+			console.log(classTypes)
+			queryConditions.classType = { $in: classTypes };
+		}
 
-    const eventList = await YogaClass.find(queryConditions).sort({ start: "desc" });
+		const eventList = await YogaClass.find(queryConditions).sort({
+			start: "desc",
+		});
 
-    if (!eventList || eventList.length === 0) {
-        console.log("No classes found for the selected date and class type");
-        return res.status(404).json({ error: "No classes found for the selected date and class type" });
-    }
-
-    res.json({ eventList });
-} catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-}
-  });  
+		if (!eventList || eventList.length === 0) {
+			// console.log("No classes found for the selected date and class type");
+			return res.status(201).json({
+				message: "No classes found for the selected date and class type",
+			});
+		}
+		console.log(eventList)
+		res.json({ eventList });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
 
 // Create New Class
 // Admin / Private Route
 // @route POST /class
 module.exports.createClass = asyncHandler(async (req, res) => {
-	const {
-		classType,
-		start,
-		end,
-		price,
-		location,
-		maxCapacity
-	} = req.body;
+	const { classType, start, end, price, location, maxCapacity } = req.body;
 
-	if (
-		!classType ||
-		!start ||
-		!end ||
-		!price ||
-		!location ||
-		!maxCapacity
-	) {
+	if (!classType || !start || !end || !price || !location || !maxCapacity) {
 		return res.status(400).json({ msg: "Please enter all fields" });
 	}
 
@@ -73,7 +64,6 @@ module.exports.createClass = asyncHandler(async (req, res) => {
 			price,
 			location,
 			maxCapacity,
-			
 		});
 
 		await newClass.save();
@@ -122,7 +112,6 @@ module.exports.updateClassById = asyncHandler(async (req, res) => {
 			const updatedYogaClass = await yogaClass.save();
 
 			res.status(200).json({
-				
 				classType: updatedYogaClass.classType,
 				start: updatedYogaClass.start,
 				end: updatedYogaClass.end,
@@ -134,7 +123,6 @@ module.exports.updateClassById = asyncHandler(async (req, res) => {
 	} catch (error) {
 		return res.status(401).json({ msg: error.message });
 	}
-	
 });
 
 // Delete Class

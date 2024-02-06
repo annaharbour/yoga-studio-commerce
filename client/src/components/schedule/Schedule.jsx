@@ -1,19 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import { useGetClassesQuery } from "../../slices/scheduleSlice";
 
 export default function Schedule() {
 	const [selectedDate, setSelectedDate] = useState(new Date());
-	const [selectedClassType, setSelectedClassType] = useState("");
+	const [selectedClassTypes, setSelectedClassTypes] = useState([]);
 
-	const { data, isLoading, error, refetch } = useGetClassesQuery({
+	const { data, isLoading, refetch} = useGetClassesQuery({
 		date: selectedDate.toISOString(),
-		...(selectedClassType.length > 0 && { classType: selectedClassType }),
+		...(selectedClassTypes.length > 0 && { classTypes: selectedClassTypes }),
 	});
 
 	const classes = data?.eventList || [];
 
-	// Event Handlers for Day, Month, Year, Class Types
 	const classTypes = [
 		"Power",
 		"Nidra",
@@ -67,13 +66,19 @@ export default function Schedule() {
 	const years = [getCurrentYear, getCurrentYear + 1, getCurrentYear + 2];
 
 	const handleClassTypeChange = (e) => {
-		e.preventDefault();
 		const selectedClassType = e.target.value;
-		setSelectedClassType(selectedClassType);
+		setSelectedClassTypes((prevTypes) => {
+		  if (prevTypes.includes(selectedClassType)) {
+			return prevTypes.filter((type) => type !== selectedClassType);
+		  } else {
+			return [...prevTypes, selectedClassType];
+		  }
+		});
 	};
 
+	
+
 	const handleMonthChange = (e) => {
-		e.preventDefault();
 		const selectedMonth = e.target.value;
 		const updatedDate = new Date(selectedDate);
 		updatedDate.setMonth(months.indexOf(selectedMonth));
@@ -81,7 +86,6 @@ export default function Schedule() {
 	};
 
 	const handleDayChange = (e) => {
-		e.preventDefault();
 		const selectedDay = e.target.value;
 		const updatedDate = new Date(selectedDate);
 		updatedDate.setDate(selectedDay);
@@ -89,27 +93,23 @@ export default function Schedule() {
 	};
 
 	const handleYearChange = (e) => {
-		e.preventDefault();
 		const selectedYear = e.target.value;
 		const updatedDate = new Date(selectedDate);
 		updatedDate.setFullYear(selectedYear);
 		setSelectedDate(updatedDate);
 	};
 
-	const handleDateChange = (e, date) => {
-		e.preventDefault();
+	const handleDateChange = (date) => {
 		setSelectedDate(date);
 	};
 
-	const onSearch = async (e) => {
-		e.preventDefault();
-		try {
-			// Fetch data here
-			await refetch(); // Assuming refetch is a function from useGetClassesQuery
-		} catch (error) {
-			console.error("Error loading classes:", error);
-		}
-	};
+	useEffect(() => {
+		const fetchData = async () => {
+		  await refetch();
+		};
+	
+		fetchData();
+	  }, [refetch, selectedClassTypes, selectedDate]);
 
 	return (
 		<div className="form">
@@ -126,24 +126,27 @@ export default function Schedule() {
 				className="schedule"
 			/>
 
-			<form className="schedule-filter" onSubmit={onSearch}>
+			<form className="schedule-filter">
 				<div>
 					<input className="search" placeholder="Search for classes"></input>
 				</div>
 
 				<div>
 					<label htmlFor="search">Filter</label>
-					<select
-						name="class-type"
-						onChange={handleClassTypeChange}
-						value={selectedClassType}>
-						<option value="">All Classes</option>
-						{classTypes.map((classType) => (
-							<option key={classType} value={classType}>
-								{classType}
-							</option>
-						))}
-					</select>
+
+					{classTypes.map((classType) => (
+						<div key={classType}>
+							<input
+								type="checkbox"
+								id={classType}
+								name={classType}
+								value={classType}
+								checked={selectedClassTypes.includes(classType)}
+								onChange={handleClassTypeChange}
+							/>
+							<label htmlFor={classType}>{classType}</label>
+						</div>
+					))}
 				</div>
 
 				<div>
@@ -175,26 +178,22 @@ export default function Schedule() {
 						))}
 					</select>
 				</div>
-				<button type="submit">Search</button>
-
 			</form>
-			<div>Render classes for this day here</div>
 
 			{isLoading ? (
 				<div>Loading</div>
 			) : (
 				<>
 					{classes.length === 0 ? (
-						<p>
-							No classes found for the selected date and type.
-						</p>
-					) : ( 
-						classes.map((c) => (				
-						<div key={c._id}>
-							<p>Class Type: {c.classType}</p>
-							<p>Start Time: {new Date(c.start).toLocaleTimeString()}</p> 
-						</div>)
-					))}
+						<p>No classes found for the selected date and type.</p>
+					) : (
+						classes.map((c) => (
+							<div key={c._id}>
+								<p>Class Type: {c.classType}</p>
+								<p>Start Time: {new Date(c.start).toLocaleTimeString()}</p>
+							</div>
+						))
+					)}
 				</>
 			)}
 		</div>

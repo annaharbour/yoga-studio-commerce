@@ -4,11 +4,11 @@ import { apiSlice } from "./apiSlice";
 export const scheduleApiSlice = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
 		getClasses: builder.query({
-			query: ({date, classType}) => ({
+			query: ({date, classTypes}) => ({
 				url: SCHEDULE_URL,
 				params: {
 					date,
-					classType
+					classTypes
 				},
 			}),
 			keepUnusedDataFor: 5,

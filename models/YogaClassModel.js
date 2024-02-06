@@ -52,7 +52,6 @@ const YogaClassSchema = new Schema({
 });
 
 YogaClassSchema.pre("save", function (next) {
-	// Set initial spotsRemaining value based on maxCapacity
 	if (!this.spotsRemaining) {
 		this.spotsRemaining = this.maxCapacity;
 	}
