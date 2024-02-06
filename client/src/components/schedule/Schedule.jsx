@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import { useGetClassesQuery } from "../../slices/scheduleSlice";
+import YogaClass from "./YogaClass";
 
 export default function Schedule() {
 	const [selectedDate, setSelectedDate] = useState(new Date());
 	const [selectedClassTypes, setSelectedClassTypes] = useState([]);
 
-	const { data, isLoading, refetch} = useGetClassesQuery({
+	const { data, isLoading, refetch } = useGetClassesQuery({
 		date: selectedDate.toISOString(),
-		classTypes: selectedClassTypes
+		classTypes: selectedClassTypes,
 	});
-	
+
 	const classes = data?.eventList || [];
 
 	const classTypes = [
@@ -68,12 +69,11 @@ export default function Schedule() {
 	const handleClassTypeChange = (e) => {
 		const selectedClassType = e.target.value;
 		setSelectedClassTypes((prevTypes) => {
-		  if (prevTypes.includes(selectedClassType)) {
-			return prevTypes.filter((type) => type !== selectedClassType);
-		  } else {
-			return [...prevTypes, selectedClassType];
-		  }
-		  
+			if (prevTypes.includes(selectedClassType)) {
+				return prevTypes.filter((type) => type !== selectedClassType);
+			} else {
+				return [...prevTypes, selectedClassType];
+			}
 		});
 	};
 
@@ -104,11 +104,10 @@ export default function Schedule() {
 
 	useEffect(() => {
 		const fetchData = async () => {
-		  await refetch();
+			await refetch();
 		};
-		console.log(Array.isArray(selectedClassTypes))
 		fetchData();
-	  }, [refetch, selectedClassTypes, selectedDate]);
+	}, [refetch, selectedClassTypes, selectedDate]);
 
 	return (
 		<div className="form">
@@ -126,15 +125,16 @@ export default function Schedule() {
 			/>
 
 			<form className="schedule-filter">
-				<div>
+				{/* Search for instructors */}
+				{/* <div>
 					<input className="search" placeholder="Search for classes"></input>
-				</div>
+				</div> */}
 
 				<div>
-					<label htmlFor="search">Filter</label>
-
+					<label htmlFor="search">Filter Classes</label>
+					<div className="checkbox-container">
 					{classTypes.map((classType) => (
-						<div key={classType}>
+						<div key={classType} className="checkbox-wrapper-24">
 							<input
 								type="checkbox"
 								id={classType}
@@ -143,9 +143,13 @@ export default function Schedule() {
 								checked={selectedClassTypes.includes(classType)}
 								onChange={handleClassTypeChange}
 							/>
-							<label htmlFor={classType}>{classType}</label>
+							<label htmlFor={classType}>
+								<span></span>
+								{classType}
+							</label>
 						</div>
 					))}
+					</div>
 				</div>
 
 				<div>
@@ -187,10 +191,15 @@ export default function Schedule() {
 						<p>No classes found for the selected date and type.</p>
 					) : (
 						classes.map((c) => (
-							<div key={c._id}>
-								<p>Class Type: {c.classType}</p>
-								<p>Start Time: {new Date(c.start).toLocaleTimeString()}</p>
-							</div>
+							<YogaClass
+								key={c._id}
+								classType={c.classType}
+								startTime={new Date(c.start).toLocaleTimeString()}
+								endTime={new Date(c.start).toLocaleTimeString()}
+								price={c.price}
+								maxCapacity={c.maxCapacity}
+								spotsRemaining={c.spotsRemaining}
+							/>
 						))
 					)}
 				</>
