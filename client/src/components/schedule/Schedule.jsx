@@ -8,9 +8,9 @@ export default function Schedule() {
 
 	const { data, isLoading, refetch} = useGetClassesQuery({
 		date: selectedDate.toISOString(),
-		...(selectedClassTypes.length > 0 && { classTypes: selectedClassTypes }),
+		classTypes: selectedClassTypes
 	});
-
+	
 	const classes = data?.eventList || [];
 
 	const classTypes = [
@@ -73,10 +73,9 @@ export default function Schedule() {
 		  } else {
 			return [...prevTypes, selectedClassType];
 		  }
+		  
 		});
 	};
-
-	
 
 	const handleMonthChange = (e) => {
 		const selectedMonth = e.target.value;
@@ -107,7 +106,7 @@ export default function Schedule() {
 		const fetchData = async () => {
 		  await refetch();
 		};
-	
+		console.log(Array.isArray(selectedClassTypes))
 		fetchData();
 	  }, [refetch, selectedClassTypes, selectedDate]);
 

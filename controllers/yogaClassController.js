@@ -9,12 +9,14 @@ const asyncHandler = require("express-async-handler");
 module.exports.getClasses = asyncHandler(async (req, res) => {
 	try {
 		const { date, classTypes } = req.query;
+		const classTypesArray = Array.isArray(classTypes) ? classTypes : classTypes.split(',');
 
 		const parsedDate = new Date(Date.parse(date));
 
 		const year = parsedDate.getFullYear();
 		const month = parsedDate.getMonth();
 		const day = parsedDate.getDate();
+		console.log(day)
 
 		const queryConditions = {
 			start: {
@@ -24,8 +26,7 @@ module.exports.getClasses = asyncHandler(async (req, res) => {
 		};
 
 		if (classTypes && classTypes.length > 0) {
-			console.log(classTypes)
-			queryConditions.classType = { $in: classTypes };
+			queryConditions.classType = { $in: classTypesArray };
 		}
 
 		const eventList = await YogaClass.find(queryConditions).sort({
@@ -33,12 +34,10 @@ module.exports.getClasses = asyncHandler(async (req, res) => {
 		});
 
 		if (!eventList || eventList.length === 0) {
-			// console.log("No classes found for the selected date and class type");
 			return res.status(201).json({
 				message: "No classes found for the selected date and class type",
 			});
 		}
-		console.log(eventList)
 		res.json({ eventList });
 	} catch (error) {
 		console.error(error);
