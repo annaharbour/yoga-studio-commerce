@@ -25,8 +25,6 @@ export default function Schedule() {
 		"Bikram",
 		"Yin",
 		"Workshop",
-		"Yoga Teacher Certification",
-		"Yoga Retreat",
 	];
 
 	const generateDaysOptions = () => {
@@ -110,83 +108,82 @@ export default function Schedule() {
 	}, [refetch, selectedClassTypes, selectedDate]);
 
 	return (
-		<div className="form">
-			<h1>Schedule</h1>
+		<>
+			<div className="schedule">
+				<Calendar
+					onChange={handleDateChange}
+					view="month"
+					value={selectedDate}
+					minDate={new Date()}
+					maxDate={
+						new Date(new Date().setFullYear(new Date().getFullYear() + 2))
+					}
+					prev2Label={null}
+					next2Label={null}
+				/>
 
-			<Calendar
-				onChange={handleDateChange}
-				view="month"
-				value={selectedDate}
-				minDate={new Date()}
-				maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 2))}
-				prev2Label={null}
-				next2Label={null}
-				className="schedule"
-			/>
-
-			<form className="schedule-filter">
-				{/* Search for instructors */}
-				{/* <div>
-					<input className="search" placeholder="Search for classes"></input>
-				</div> */}
-
-				<div>
+				<form>
 					<label htmlFor="search">Filter Classes</label>
-					<div className="checkbox-container">
-					{classTypes.map((classType) => (
-						<div key={classType} className="checkbox-wrapper-24">
-							<input
-								type="checkbox"
-								id={classType}
-								name={classType}
-								value={classType}
-								checked={selectedClassTypes.includes(classType)}
-								onChange={handleClassTypeChange}
-							/>
-							<label htmlFor={classType}>
-								<span></span>
-								{classType}
-							</label>
-						</div>
-					))}
+					<div>
+						<input
+							className="search"
+							placeholder="Search for instructors"></input>
 					</div>
-				</div>
 
-				<div>
-					<label htmlFor="date">Date:</label>
-					<select
-						name="month"
-						value={months[selectedDate.getMonth()]}
-						onChange={handleMonthChange}>
-						{months.map((month) => (
-							<option key={month} value={month}>
-								{month}
-							</option>
+					<div className="checkbox-container">
+						{classTypes.map((classType) => (
+							<div key={classType} className="checkbox-wrapper-24">
+								<input
+									type="checkbox"
+									id={classType}
+									name={classType}
+									value={classType}
+									checked={selectedClassTypes.includes(classType)}
+									onChange={handleClassTypeChange}
+								/>
+								<label htmlFor={classType}>
+									<span></span>
+									{classType}
+								</label>
+							</div>
 						))}
-					</select>
-					<select
-						name="day"
-						value={selectedDate.getDate()}
-						onChange={handleDayChange}>
-						{generateDaysOptions()}
-					</select>
-					<select
-						name="year"
-						value={selectedDate.getFullYear()}
-						onChange={handleYearChange}>
-						{years.map((year) => (
-							<option key={year} value={year}>
-								{year}
-							</option>
-						))}
-					</select>
-				</div>
-			</form>
+					</div>
 
+					<div>
+						<label htmlFor="date">Date:</label>
+						<select
+							name="month"
+							value={months[selectedDate.getMonth()]}
+							onChange={handleMonthChange}>
+							{months.map((month) => (
+								<option key={month} value={month}>
+									{month}
+								</option>
+							))}
+						</select>
+						<select
+							name="day"
+							value={selectedDate.getDate()}
+							onChange={handleDayChange}>
+							{generateDaysOptions()}
+						</select>
+						<select
+							name="year"
+							value={selectedDate.getFullYear()}
+							onChange={handleYearChange}>
+							{years.map((year) => (
+								<option key={year} value={year}>
+									{year}
+								</option>
+							))}
+						</select>
+					</div>
+				</form>
+			</div>
 			{isLoading ? (
 				<div>Loading</div>
 			) : (
-				<>
+				<div className="yoga-class-grid">
 					{classes.length === 0 ? (
 						<p>No classes found for the selected date and type.</p>
 					) : (
@@ -202,8 +199,8 @@ export default function Schedule() {
 							/>
 						))
 					)}
-				</>
+				</div>
 			)}
-		</div>
+		</>
 	);
 }

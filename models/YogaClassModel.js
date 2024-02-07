@@ -14,9 +14,7 @@ const YogaClassSchema = new Schema({
 			"Ashtanga",
 			"Bikram",
 			"Yin",
-			"Workshop",
-			"Yoga Teacher Certification",
-			"Yoga Retreat"
+			"Workshop"
 		],
 	},
 	start: {

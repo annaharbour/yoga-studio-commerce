@@ -16,7 +16,6 @@ module.exports.getClasses = asyncHandler(async (req, res) => {
 		const year = parsedDate.getFullYear();
 		const month = parsedDate.getMonth();
 		const day = parsedDate.getDate();
-		console.log(day)
 
 		const queryConditions = {
 			start: {

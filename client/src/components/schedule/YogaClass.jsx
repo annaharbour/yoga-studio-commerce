@@ -10,7 +10,7 @@ function YogaClass({
 	spotsRemaining,
 }) {
 	return (
-		<div className="yoga-class-grid">
+		<div className="yoga-class">
 			<p>Class Style: {classType}</p>
 			<p>Start Time: {startTime}</p>
 			<p>End Time: {endTime}</p>
