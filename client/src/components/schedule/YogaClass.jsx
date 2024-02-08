@@ -8,6 +8,7 @@ function YogaClass({
 	location,
 	maxCapacity,
 	spotsRemaining,
+	instructor
 }) {
 
 
@@ -15,6 +16,7 @@ function YogaClass({
 		<>
 		<div className="yoga-class">
 			<h3>{classType}</h3>
+			<p>{instructor ? instructor : 'Instructor TBD'}</p>
 			<p>{startTime} - {endTime}</p>
 			<p>Location here{location}</p>
 			<div className="book-class">

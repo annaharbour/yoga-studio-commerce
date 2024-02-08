@@ -2,6 +2,7 @@
 
 * {
 	margin: 0;
+
 	box-sizing: border-box;
 }
 
@@ -235,12 +236,12 @@ h1 {
 
 /* Calendar */
 
-label {
+.schedule-form label {
 	margin-right: 1rem;
 	font: inherit;
-	color: #8fbcb5;
+	color: var(--highlands--dark);
 	font-weight: bold;
-	font-size: 1rem;
+	font-size: 1.2rem;
 }
 
 .search {
@@ -538,18 +539,29 @@ option:hover {
 }
 
 .yoga-class-grid {
+	background-color: var(--highlands--ultra-light);
 	width: 60%;
 	margin: 5rem auto;
 	display: flex;
 	flex-flow: column;
 	align-items: center;
 	justify-content: space-between;
-	border: 0.1rem solid black;
 	border-radius: 5px;
-	box-shadow: 0.1rem 0.1rem 0.1rem rgba(255, 255, 255, 0.1);
+	box-shadow: 0.1rem 0rem 0.1rem 0.1rem #a0a096;
+}
+
+.selected-date {
+	padding: 1.5rem 0;
+	text-align: center;
+	font-size: 1.5rem;
+	color: #333;
+	border-bottom: .1rem dotted #333;
+	background-color: var(--highlands--light);
+	width: 100%;
 }
 
 .yoga-class {
+	padding: 1rem;
 	font-size: 1.2rem;
 	width: 100%;
 	display: flex;
@@ -557,8 +569,7 @@ option:hover {
 	flex-wrap: wrap;
 	justify-content: space-evenly;
 	align-items: center;
-	padding: 3rem;
-	background-color: var(--highlands--ultra-light);
+	
 	h3 {
 		font-family: "Poppins", sans-serif;
 	}
@@ -570,7 +581,7 @@ option:hover {
 	gap: 0.5rem;
 	button {
 		font-size: 1.1rem;
-		font-family: 'Poppins', sans-serif;
+		font-family: "Poppins", sans-serif;
 		padding: 0.5rem;
 		background-color: hsl(195, 7%, 22%, 100%);
 		color: white;
@@ -587,7 +598,10 @@ option:hover {
 }
 
 .no-classes {
+	font-family: "Poppins", sans-serif;
+	font-weight: bold;
 	margin: 5rem auto;
+	font-size: 1.2rem;
 }
 
 .line {
@@ -616,7 +630,6 @@ option:hover {
 		transform: scale(1.2);
 	}
 	.schedule {
-		margin: 1rem auto;
 		gap: 0;
 	}
 	.yoga-class-grid {
