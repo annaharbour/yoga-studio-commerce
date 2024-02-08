@@ -1,6 +1,8 @@
 const YogaClass = require("../models/YogaClassModel");
 const Membership = require("../models/MembershipModel");
 const asyncHandler = require("express-async-handler");
+const moment = require('moment'); 
+
 
 // Get calendar of bookable classes
 // Public Route
@@ -50,27 +52,35 @@ module.exports.getClasses = asyncHandler(async (req, res) => {
 module.exports.createClass = asyncHandler(async (req, res) => {
 	const { classType, start, end, price, location, maxCapacity } = req.body;
 
-	if (!classType || !start || !end || !price || !location || !maxCapacity) {
-		return res.status(400).json({ msg: "Please enter all fields" });
-	}
+    // Validate date format (MM/DD/YYYY HH:MM)
+    const dateFormat = 'MM/DD/YYYY HH:mm'; // Define expected date format
+    if (!moment(start, dateFormat, true).isValid() || !moment(end, dateFormat, true).isValid()) {
+        return res.status(400).json({ error: 'Invalid date format. Please use MM/DD/YYYY HH:MM.' });
+    }
 
-	try {
-		const newClass = new YogaClass({
-			classType,
-			start,
-			end,
-			price,
-			location,
-			maxCapacity,
-		});
+    try {
+        const parsedStart = moment.utc(start, dateFormat).toDate();
+        const parsedEnd = moment.utc(end, dateFormat).toDate();
 
-		await newClass.save();
+        const formattedStart = parsedStart.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
+        const formattedEnd = parsedEnd.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
 
-		return res.status(201).json({ newClass });
-	} catch (err) {
-		console.error("Error creating class:", err);
-		return res.status(500).json({ error: "Internal server error" });
-	}
+        const newClass = new YogaClass({
+            classType,
+            start: formattedStart,
+            end: formattedEnd,
+            price,
+            location,
+            maxCapacity,
+        });
+
+        await newClass.save();
+
+        return res.status(201).json({ message: 'Class created successfully', newClass });
+    } catch (err) {
+        console.error('Error creating class:', err);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // Get Class By Id

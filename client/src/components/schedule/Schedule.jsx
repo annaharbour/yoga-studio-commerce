@@ -183,11 +183,12 @@ export default function Schedule() {
 			{isLoading ? (
 				<div>Loading</div>
 			) : (
-				<div className="yoga-class-grid">
+				<>
 					{classes.length === 0 ? (
-						<p>No classes found for the selected date and type.</p>
+						<p className="no-classes">No classes found for the selected date and type.</p>
 					) : (
-						classes.map((c) => (
+						<div className="yoga-class-grid">
+						{classes.map((c) => (
 							<YogaClass
 								key={c._id}
 								classType={c.classType}
@@ -197,9 +198,10 @@ export default function Schedule() {
 								maxCapacity={c.maxCapacity}
 								spotsRemaining={c.spotsRemaining}
 							/>
-						))
+						))}
+						</div>
 					)}
-				</div>
+				</>
 			)}
 		</>
 	);

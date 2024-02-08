@@ -9,7 +9,7 @@ function YogaClass({
 	maxCapacity,
 	spotsRemaining,
 }) {
-	console.log("startTime:", startTime);
+
 
 	return (
 		<>
@@ -19,7 +19,7 @@ function YogaClass({
 			<p>Location here{location}</p>
 			<div className="book-class">
 				{spotsRemaining} of {maxCapacity} spots left! Only ${price}!
-				<button className="book-class-button">Book now</button>
+				<button className="book-class-button">BOOK NOW</button>
 			</div>
 		</div>
 		<div className="line"></div>
