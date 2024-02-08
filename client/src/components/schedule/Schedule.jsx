@@ -122,7 +122,7 @@ export default function Schedule() {
 					next2Label={null}
 				/>
 
-				<form>
+				<form className="schedule-form">
 					<label htmlFor="search">Filter Classes</label>
 					<div>
 						<input
