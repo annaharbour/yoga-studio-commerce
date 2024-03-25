@@ -37,10 +37,6 @@ const UserSchema = new Schema(
             required: true,
             default: false
         },
-		isInstructor: {
-			type: Boolean,
-			default: false
-		},
 		membership: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Membership',
@@ -48,9 +44,6 @@ const UserSchema = new Schema(
 				type: Boolean,
 				default: false
 			}
-		},
-		classesTaken: {
-			type: Number
 		}
 	},
 	{

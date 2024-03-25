@@ -10,7 +10,6 @@ import Home from "./components/Home";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Plans from "./components/memberships/Plans";
-import Retreats from './components/schedule/Retreats'
 import Schedule from "./components/schedule/Schedule";
 import Profile from './components/auth/Profile'
 import PrivateRoute from "./components/auth/PrivateRoute";
@@ -23,7 +22,6 @@ const router = (
 				<Route path="/login" element={<Login />} />
 				<Route path="/register" element={<Register />} />
 				<Route path="/memberships" element={<Plans />} />
-				<Route path="/retreats" element={<Retreats />} />
 				<Route path="/schedule" element={<Schedule />} />
 				<Route path="" element={<PrivateRoute />}>
 					<Route path="/account" element={<Profile />} />

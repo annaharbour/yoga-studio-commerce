@@ -10,7 +10,6 @@ import {
 	faUser,
 	faCalendarDays,
 	faAddressCard,
-	// faPlane,
 	faCaretDown,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -45,8 +44,6 @@ export default function Nav() {
 		if (ref.current) {
 		  document.addEventListener("mousedown", handleClickOutside);
 		}
-	  
-		// Cleanup the event listener when the component is unmounted
 		return () => {
 		  document.removeEventListener("mousedown", handleClickOutside);
 		};
@@ -80,14 +77,6 @@ export default function Nav() {
 						</div>
 					</Link>
 				</li>
-				{/* <li>
-					<Link to="/retreats">
-						<div className="nav-item">
-							<FontAwesomeIcon icon={faPlane} className="nav-icon" />
-							<span className="nav-text">Retreats</span>
-						</div>
-					</Link>
-				</li> */}
 				<li>
 					<div className="nav-item">
 						{userInfo ? (

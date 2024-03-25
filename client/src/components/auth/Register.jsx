@@ -11,7 +11,7 @@ function Register() {
 	const [email, setEmail] = useState("");
 	const [phoneNr, setPhoneNr] = useState("");
 	const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState("");
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -20,9 +20,9 @@ function Register() {
 
 	const { userInfo } = useSelector((state) => state.auth);
 
-	const {search} = useLocation()
-    const sp = new URLSearchParams(search)
-    const redirect = sp.get('redirect') || '/'
+	const { search } = useLocation();
+	const sp = new URLSearchParams(search);
+	const redirect = sp.get("redirect") || "/";
 
 	useEffect(() => {
 		if (userInfo) {
@@ -31,19 +31,25 @@ function Register() {
 	}, [userInfo, navigate, redirect]);
 
 	const submitHandler = async (e) => {
-    e.preventDefault()
-    if(password!==confirmPassword){
-      toast.error('Password do not match')
-    } else {
-      try {
-        const res = await register({email, firstName, lastName, phoneNr, password}).unwrap()
-        dispatch(setCredentials({...res}))
-        navigate(redirect)
-      } catch(err){
-        toast.error(err?.data?.message || err.error)
-      }
-    }
-  }
+		e.preventDefault();
+		if (password !== confirmPassword) {
+			toast.error("Password do not match");
+		} else {
+			try {
+				const res = await register({
+					email,
+					firstName,
+					lastName,
+					phoneNr,
+					password,
+				}).unwrap();
+				dispatch(setCredentials({ ...res }));
+				navigate(redirect);
+			} catch (err) {
+				toast.error(err?.data?.message || err.error);
+			}
+		}
+	};
 
 	return (
 		<div className="form">
@@ -82,7 +88,7 @@ function Register() {
 					name="phoneNr"
 					id="phoneNr"
 					value={phoneNr}
-          pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+					pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
 					onChange={(e) => setPhoneNr(e.target.value)}
 					required
 				/>
@@ -97,7 +103,7 @@ function Register() {
 					required
 				/>
 
-<label htmlFor="confirmPassword">Confirm Password:</label>
+				<label htmlFor="confirmPassword">Confirm Password:</label>
 				<input
 					type="password"
 					name="confirmPassword"
@@ -106,12 +112,15 @@ function Register() {
 					onChange={(e) => setConfirmPassword(e.target.value)}
 					required
 				/>
-				<button className="submit-button" type="submit">Sign Up</button>
+				<button className="submit-button" type="submit">
+					Sign Up
+				</button>
 			</form>
-			<div className="auth-link">No account? <Link to='/login'>Sign in here</Link></div>
-
+			<div className="auth-link">
+				No account? <Link to="/login">Sign in here</Link>
+			</div>
 		</div>
 	);
-  }
+}
 
 export default Register;

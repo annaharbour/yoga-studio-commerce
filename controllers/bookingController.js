@@ -21,7 +21,6 @@ module.exports.getClassBookings = asyncHandler(async (req, res) => {
 		email: student.email,
 		phoneNr: student.phoneNr,
 		membership: student.membership,
-		classesTaken: student.classesTaken,
 	}));
 
 	return res.status(200).json({ studentsSignedUp });

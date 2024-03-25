@@ -11,14 +11,13 @@ function YogaClass({
 	instructor
 }) {
 
-
 	return (
 		<>
 		<div className="yoga-class">
 			<h3>{classType}</h3>
 			<p>{instructor ? instructor : 'Instructor TBD'}</p>
 			<p>{startTime} - {endTime}</p>
-			<p>Location here{location}</p>
+			<p>{location}</p>
 			<div className="book-class">
 				{spotsRemaining} of {maxCapacity} spots left! Only ${price}!
 				<button className="book-class-button">BOOK NOW</button>
