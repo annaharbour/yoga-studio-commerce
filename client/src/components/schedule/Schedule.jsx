@@ -124,12 +124,6 @@ export default function Schedule() {
 
 				<form className="schedule-form">
 					<label htmlFor="search">Class Style</label>
-					{/* <div>
-						<input
-							className="search"
-							placeholder="Search for instructors"></input>
-					</div> */}
-
 					<div className="checkbox-container">
 						{classTypes.map((classType) => (
 							<div key={classType} className="checkbox-wrapper-24">
@@ -185,7 +179,7 @@ export default function Schedule() {
 			) : (
 				<>
 					{classes.length === 0 ? (
-						<p className="no-classes">No classes found for the selected date and type.</p>
+						<p className="no-classes">No classes found for the selected date and yoga style.</p>
 					) : (
 						<div className="yoga-class-grid">
 							<div className="selected-date">{selectedDate.toLocaleDateString()}</div>

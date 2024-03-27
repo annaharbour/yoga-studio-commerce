@@ -13,6 +13,7 @@ import Plans from "./components/memberships/Plans";
 import Schedule from "./components/schedule/Schedule";
 import Profile from './components/auth/Profile'
 import PrivateRoute from "./components/auth/PrivateRoute";
+import Checkout from "./components/checkout/Checkout";
 
 const router = (
 	<BrowserRouter>
@@ -23,6 +24,7 @@ const router = (
 				<Route path="/register" element={<Register />} />
 				<Route path="/memberships" element={<Plans />} />
 				<Route path="/schedule" element={<Schedule />} />
+				<Route path="/checkout" element={<Checkout />} />
 				<Route path="" element={<PrivateRoute />}>
 					<Route path="/account" element={<Profile />} />
 				</Route>

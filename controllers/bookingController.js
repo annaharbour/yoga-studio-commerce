@@ -1,7 +1,9 @@
 const YogaClass = require("../models/YogaClassModel");
 const User = require("../models/UserModel");
+const stripe = require("stripe")(
+	"sk_test_51NX9SUEiiZIWZaNhy8C6xxsEJ0XVoVNVaXVabGKdK1D3IvT4ChzvpYZA02LNFNbcdxbjoiPGLfTLdvXc4KxN5Cw2004K1ZOGpA"
+);
 const asyncHandler = require("express-async-handler");
-
 // Get all bookings
 // Private / Admin Route
 // @route DELETE /bookings/:id
@@ -44,21 +46,24 @@ module.exports.createBooking = asyncHandler(async (req, res) => {
 			return res.status(404).json({ msg: "User not found" });
 		}
 
-		let bookingPrice = 0;
-
-		if (user.membership !== "none") {
-			bookingPrice = yogaClass.price;
-		}
-
 		if (yogaClass.spotsRemaining > 0) {
-			yogaClass.spotsRemaining--;
-
-			yogaClass.studentsSignedUp.push(user);
-
-			await yogaClass.save();
-			await user.save();
-
-			return res.status(200).json({ message: "Booking created" });
+			try {
+				const charge = await stripe.charges.create({
+					amount: yogaClass.price * 100,
+					currency: "usd",
+					source: "tok_visa",
+					description: "Charge for test",
+				});
+				if (charge.status === "succeeded") {
+					yogaClass.spotsRemaining--;
+					yogaClass.studentsSignedUp.push(user);
+					await yogaClass.save();
+					await user.save();
+					return res.status(200).json({ message: "Booking created" });
+				}
+			} catch (err) {
+				console.log("Charge unsuccessful:", charge.failure_message);
+			}
 		}
 	} catch (err) {
 		return res.status(500).json({ message: err.message });
@@ -69,31 +74,33 @@ module.exports.createBooking = asyncHandler(async (req, res) => {
 // Private Route
 // @route DELETE /bookings/:id
 module.exports.cancelBooking = asyncHandler(async (req, res) => {
-  const { userId } = req.user;
+	const { userId } = req.user;
 
-  const yogaClass = await YogaClass.findById(req.params.id);
+	const yogaClass = await YogaClass.findById(req.params.id);
 
-  if (!yogaClass) {
-    return res.status(404).json({ message: "Yoga class not found" });
-  }
+	if (!yogaClass) {
+		return res.status(404).json({ message: "Yoga class not found" });
+	}
 
-  const user = await User.findOne({ userId: userId });
-   if (!user) {
-     return res.status(404).json({ message: "User not found" });
-   }
+	const user = await User.findOne({ userId: userId });
+	if (!user) {
+		return res.status(404).json({ message: "User not found" });
+	}
 
-const isBooked = yogaClass.studentsSignedUp.some(studentId => studentId.equals(user._id));
+	const isBooked = yogaClass.studentsSignedUp.some((studentId) =>
+		studentId.equals(user._id)
+	);
 
-   if (!isBooked) {
-     return res.status(400).json({ msg: "User is not booked for this class" });
-   }
+	if (!isBooked) {
+		return res.status(400).json({ msg: "User is not booked for this class" });
+	}
 
-   yogaClass.studentsSignedUp = yogaClass.studentsSignedUp.filter(
-    (studentId) => !studentId.equals(user._id)
-  );
+	yogaClass.studentsSignedUp = yogaClass.studentsSignedUp.filter(
+		(studentId) => !studentId.equals(user._id)
+	);
 
-  await yogaClass.save();
-  await user.save();
+	await yogaClass.save();
+	await user.save();
 
-  return res.status(200).json({ message: "Booking canceled" });
+	return res.status(200).json({ message: "Booking canceled" });
 });

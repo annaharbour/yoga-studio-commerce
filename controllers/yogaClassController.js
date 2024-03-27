@@ -1,5 +1,4 @@
 const YogaClass = require("../models/YogaClassModel");
-const Membership = require("../models/MembershipModel");
 const asyncHandler = require("express-async-handler");
 const moment = require('moment'); 
 
