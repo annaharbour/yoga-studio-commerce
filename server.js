@@ -5,8 +5,8 @@ const routes = require("./routes/index");
 const cookieParser = require("cookie-parser");
 const cors = require('cors');
 
-
 dotenv.config();
+
 const app = express();
 app.use(express.json());
 app.use(cookieParser());

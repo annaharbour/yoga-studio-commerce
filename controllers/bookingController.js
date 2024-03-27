@@ -1,8 +1,12 @@
 const YogaClass = require("../models/YogaClassModel");
 const User = require("../models/UserModel");
+const dotenv = require("dotenv");
+dotenv.config();
+const stripeAPIKey = process.env.stripeSecretKey
 const stripe = require("stripe")(
-	"sk_test_51NX9SUEiiZIWZaNhy8C6xxsEJ0XVoVNVaXVabGKdK1D3IvT4ChzvpYZA02LNFNbcdxbjoiPGLfTLdvXc4KxN5Cw2004K1ZOGpA"
+	stripeAPIKey
 );
+
 const asyncHandler = require("express-async-handler");
 // Get all bookings
 // Private / Admin Route
