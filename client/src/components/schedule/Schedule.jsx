@@ -179,13 +179,14 @@ export default function Schedule() {
 			) : (
 				<>
 					{classes.length === 0 ? (
-						<p className="no-classes">No classes found for the selected date and yoga style.</p>
+						<></>
 					) : (
 						<div className="yoga-class-grid">
 							<div className="selected-date">{selectedDate.toLocaleDateString()}</div>
 						{classes.map((c) => (
 							<YogaClass
 								key={c._id}
+								classId={c._id}
 								classType={c.classType}
 								startTime={new Date(c.start).toLocaleTimeString()}
 								endTime={new Date(c.start).toLocaleTimeString()}

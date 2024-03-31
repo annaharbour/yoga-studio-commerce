@@ -9,11 +9,21 @@ function YogaClass({
 	location,
 	maxCapacity,
 	spotsRemaining,
+	classId,
 }) {
 	const onClick = async (e) => {
 		e.preventDefault();
 		try {
-			navigate("/checkout");
+			navigate("/checkout", {
+				state: {
+						classType,
+						startTime,
+						endTime,
+						price,
+						classId,
+					
+				},
+			});
 		} catch (err) {
 			console.log(err.err);
 		}
