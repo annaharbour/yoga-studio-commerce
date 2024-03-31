@@ -69,14 +69,14 @@ export default function Nav() {
 						</div>
 					</Link>
 				</li>
-				<li>
+				{/* <li>
 					<Link to="/memberships">
 						<div className="nav-item">
 							<FontAwesomeIcon icon={faAddressCard} className="nav-icon" />
 							<span className="nav-text">Memberships</span>
 						</div>
 					</Link>
-				</li>
+				</li> */}
 				<li>
 					<div className="nav-item">
 						{userInfo ? (
