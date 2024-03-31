@@ -9,11 +9,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
-import Plans from "./components/memberships/Plans";
-import Retreats from './components/schedule/Retreats'
+// import Plans from "./components/memberships/Plans";
 import Schedule from "./components/schedule/Schedule";
 import Profile from './components/auth/Profile'
 import PrivateRoute from "./components/auth/PrivateRoute";
+import Checkout from "./components/checkout/Checkout";
 
 const router = (
 	<BrowserRouter>
@@ -22,9 +22,9 @@ const router = (
 				<Route index={true} path="/" element={<Home />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/register" element={<Register />} />
-				<Route path="/memberships" element={<Plans />} />
-				<Route path="/retreats" element={<Retreats />} />
+				{/* <Route path="/memberships" element={<Plans />} /> */}
 				<Route path="/schedule" element={<Schedule />} />
+				<Route path="/checkout" element={<Checkout />} />
 				<Route path="" element={<PrivateRoute />}>
 					<Route path="/account" element={<Profile />} />
 				</Route>

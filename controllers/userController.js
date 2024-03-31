@@ -40,7 +40,15 @@ module.exports.signup = asyncHandler(async (req, res) => {
 
 			await newUser.save();
 
-			return res.status(201).json({ msg: "User created" });
+			// return res.status(201).json({ msg: "User created" });
+			return res.status(200).json({
+				email,
+				userId,
+				isAdmin,
+				firstName,
+				lastName,
+				phoneNr
+			});	
 		}
 	} catch (err) {
 		console.error("Error creating user:", err);
@@ -49,7 +57,7 @@ module.exports.signup = asyncHandler(async (req, res) => {
 });
 
 module.exports.login = asyncHandler(async (req, res) => {
-	const { email, password, isAdmin } = req.body;
+	const { email, password } = req.body;
 
 	try {
 		const user = await User.findOne({ email });
@@ -64,7 +72,7 @@ module.exports.login = asyncHandler(async (req, res) => {
 			return res.status(401).json({ msg: "Authentication failed - wrong password" });
 		}
 
-		const { userId, firstName, lastName, phoneNr } = user;
+		const { userId, firstName, lastName, phoneNr, isAdmin } = user;
 		const jwtToken = jwt.sign(
 			{
 				email,
@@ -77,7 +85,6 @@ module.exports.login = asyncHandler(async (req, res) => {
 				expiresIn: "2h",
 			}
 		);
-
 		res.cookie("accessToken", jwtToken, { httpOnly: true, maxAge: 36000000 });
 
 		return res.status(200).json({
@@ -136,7 +143,6 @@ module.exports.getUsers = asyncHandler(async (req, res) => {
 				email,
 				phoneNr,
 				isAdmin,
-				isInstructor,
 				membership,
 			} = user;
 			return {
@@ -146,7 +152,6 @@ module.exports.getUsers = asyncHandler(async (req, res) => {
 				email,
 				phoneNr,
 				isAdmin,
-				isInstructor,
 				membership,
 			};
 		});
@@ -163,8 +168,6 @@ module.exports.updateUser = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		console.log('Received Data:', req.body);
-
 		const user = await User.findOne({ userId: id });
 		if (!user) {
 			return res.status(403).json({ msg: "User not found" });
@@ -181,9 +184,7 @@ module.exports.updateUser = asyncHandler(async (req, res) => {
 
 			const updatedUser = await user.save();
 
-			console.log('Response:', res);  
-
-			res.status(200).json({
+			return res.status(200).json({
 				userId: updatedUser.userId,
 				firstName: updatedUser.firstName,
 				lastName: updatedUser.lastName,

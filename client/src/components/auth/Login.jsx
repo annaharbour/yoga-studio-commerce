@@ -30,8 +30,11 @@ function Login() {
 	const submitHandler = async (e) => {
 		e.preventDefault();
 		try {
+			// unwrap will resolve to the value of fulfilled action, 
 			const res = await login({ email, password }).unwrap();
+			// dispatches action that sets state.userInfo to email and password
 			dispatch(setCredentials({ ...res }));
+			// redirects back to home page
 			navigate(redirect);
 		} catch (err) {
 			 toast.error(err?.data?.msg || err.message)

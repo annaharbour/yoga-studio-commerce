@@ -1,23 +1,32 @@
 import { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import { useGetClassesQuery } from "../../slices/scheduleSlice";
-
+import YogaClass from "./YogaClass";
 
 export default function Schedule() {
 	const [selectedDate, setSelectedDate] = useState(new Date());
-	// const [classTypes, setClassTypes] = useState([]);
+	const [selectedClassTypes, setSelectedClassTypes] = useState([]);
 
-	const { data, isLoading, error } = useGetClassesQuery();
+	const { data, isLoading, refetch } = useGetClassesQuery({
+		date: selectedDate.toISOString(),
+		classTypes: selectedClassTypes,
+	});
 
-	if (isLoading) {
-		console.log("Loading...");
-	  } else if (error) {
-		console.error("Error loading classes:", error);
-	  } else {
-		console.log("Loaded data:", data);
-	  }
-	
-	// Event Handlers for Day, Month, Year
+	const classes = data?.eventList || [];
+
+	const classTypes = [
+		"Power",
+		"Nidra",
+		"Vinyasa",
+		"Hatha",
+		"Iyengar",
+		"Kundalini",
+		"Ashtanga",
+		"Bikram",
+		"Yin",
+		"Workshop",
+	];
+
 	const generateDaysOptions = () => {
 		const daysInMonth = new Date(
 			selectedDate.getFullYear(),
@@ -55,6 +64,17 @@ export default function Schedule() {
 	const getCurrentYear = new Date().getFullYear();
 	const years = [getCurrentYear, getCurrentYear + 1, getCurrentYear + 2];
 
+	const handleClassTypeChange = (e) => {
+		const selectedClassType = e.target.value;
+		setSelectedClassTypes((prevTypes) => {
+			if (prevTypes.includes(selectedClassType)) {
+				return prevTypes.filter((type) => type !== selectedClassType);
+			} else {
+				return [...prevTypes, selectedClassType];
+			}
+		});
+	};
+
 	const handleMonthChange = (e) => {
 		const selectedMonth = e.target.value;
 		const updatedDate = new Date(selectedDate);
@@ -80,76 +100,105 @@ export default function Schedule() {
 		setSelectedDate(date);
 	};
 
-	const onSearch = (e) => {
-		e.preventDefault();
-		console.log("Search");
-	};
+	useEffect(() => {
+		const fetchData = async () => {
+			await refetch();
+		};
+		fetchData();
+	}, [refetch, selectedClassTypes, selectedDate]);
 
 	return (
-		<div className="form">
-			<h1>Schedule</h1>
+		<>
+			<div className="schedule">
+				<Calendar
+					onChange={handleDateChange}
+					view="month"
+					value={selectedDate}
+					minDate={new Date()}
+					maxDate={
+						new Date(new Date().setFullYear(new Date().getFullYear() + 2))
+					}
+					prev2Label={null}
+					next2Label={null}
+				/>
 
-			<form className="schedule-filter" onSubmit={onSearch}>
-				<div>
-					<input className="search" placeholder="Search for classes"></input>
-				</div>
-
-				<div>
-					<label htmlFor="search">Filter</label>
-					<select name="class-type">
-						<option value="">All Classes</option>
-						{/* {classTypes.map((classType) => (
-							<option key={classType} value={classType}>
-								{classType}
-							</option>
-						))} */}
-					</select>
-				</div>
-
-				<div>
-					<label htmlFor="date">Date:</label>
-					<select
-						name="month"
-						value={months[selectedDate.getMonth()]}
-						onChange={handleMonthChange}>
-						{months.map((month) => (
-							<option key={month} value={month}>
-								{month}
-							</option>
+				<form className="schedule-form">
+					<label htmlFor="search">Class Style</label>
+					<div className="checkbox-container">
+						{classTypes.map((classType) => (
+							<div key={classType} className="checkbox-wrapper-24">
+								<input
+									type="checkbox"
+									id={classType}
+									name={classType}
+									value={classType}
+									checked={selectedClassTypes.includes(classType)}
+									onChange={handleClassTypeChange}
+								/>
+								<label htmlFor={classType}>
+									<span></span>
+									{classType}
+								</label>
+							</div>
 						))}
-					</select>
-					<select
-						name="day"
-						value={selectedDate.getDate()}
-						onChange={handleDayChange}>
-						{generateDaysOptions()}
-					</select>
-					<select
-						name="year"
-						value={selectedDate.getFullYear()}
-						onChange={handleYearChange}>
-						{years.map((year) => (
-							<option key={year} value={year}>
-								{year}
-							</option>
+					</div>
+
+					<div>
+						<label htmlFor="date">Date:</label>
+						<select
+							name="month"
+							value={months[selectedDate.getMonth()]}
+							onChange={handleMonthChange}>
+							{months.map((month) => (
+								<option key={month} value={month}>
+									{month}
+								</option>
+							))}
+						</select>
+						<select
+							name="day"
+							value={selectedDate.getDate()}
+							onChange={handleDayChange}>
+							{generateDaysOptions()}
+						</select>
+						<select
+							name="year"
+							value={selectedDate.getFullYear()}
+							onChange={handleYearChange}>
+							{years.map((year) => (
+								<option key={year} value={year}>
+									{year}
+								</option>
+							))}
+						</select>
+					</div>
+				</form>
+			</div>
+			{isLoading ? (
+				<div>Loading</div>
+			) : (
+				<>
+					{classes.length === 0 ? (
+						<></>
+					) : (
+						<div className="yoga-class-grid">
+							<div className="selected-date">{selectedDate.toLocaleDateString()}</div>
+						{classes.map((c) => (
+							<YogaClass
+								key={c._id}
+								classId={c._id}
+								classType={c.classType}
+								startTime={new Date(c.start).toLocaleTimeString()}
+								endTime={new Date(c.start).toLocaleTimeString()}
+								price={c.price}
+								maxCapacity={c.maxCapacity}
+								spotsRemaining={c.spotsRemaining}
+							/>
 						))}
-					</select>
-				</div>
-			</form>
-			<Calendar
-				onChange={handleDateChange}
-				view="month"
-				value={selectedDate}
-				minDate={new Date()}
-				maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 2))}
-				prev2Label={null}
-				next2Label={null}
-				className="schedule"
-			/>
-			<div>Selected Date: {selectedDate.toLocaleDateString()}</div>
-			<div>Render classes for this day here</div>
-									
-						
-		</div>
+						</div>
+					)}
+				</>
+			)}
+		</>
 	);
 }

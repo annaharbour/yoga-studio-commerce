@@ -28,7 +28,7 @@ module.exports.getMembershipPlans = asyncHandler(async (req, res) => {
 		}
 		const membershipDetails = memberships.map((membership) => ({
 			membershipType: membership.membershipType,
-			details: membership.description,
+			description: membership.description,
 			billingFreq: membership.billingFreq,
 			price: membership.price,
 			id: membership._id

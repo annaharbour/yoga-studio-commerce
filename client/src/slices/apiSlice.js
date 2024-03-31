@@ -28,3 +28,4 @@ export const apiSlice = createApi({
 	tagTypes: ["User", "YogaClass"],
 	endpoints: (builder) => ({}),
 });
+

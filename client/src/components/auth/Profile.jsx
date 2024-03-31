@@ -6,11 +6,11 @@ import { toast } from "react-toastify";
 
 function Profile() {
 	const { userInfo } = useSelector((state) => state.auth);
-
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [email, setEmail] = useState("");
 	const [phoneNr, setPhoneNr] = useState("");
+	
 	const dispatch = useDispatch();
 
 	const [updateUser, { isLoading }] = useUpdateUserMutation();

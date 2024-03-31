@@ -14,9 +14,7 @@ const YogaClassSchema = new Schema({
 			"Ashtanga",
 			"Bikram",
 			"Yin",
-			"Workshop",
-			"Yoga Teacher Certification",
-			"Yoga Retreat"
+			"Workshop"
 		],
 	},
 	start: {
@@ -52,7 +50,6 @@ const YogaClassSchema = new Schema({
 });
 
 YogaClassSchema.pre("save", function (next) {
-	// Set initial spotsRemaining value based on maxCapacity
 	if (!this.spotsRemaining) {
 		this.spotsRemaining = this.maxCapacity;
 	}

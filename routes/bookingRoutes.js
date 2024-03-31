@@ -3,6 +3,6 @@ const {getClassBookings, createBooking, cancelBooking}  = require('../controller
 const router = Router();
 const {protect, admin} = require('../middleware/authMiddleware')
 
-router.route('/:id').get(protect, admin, getClassBookings).post(protect, createBooking).delete(protect, cancelBooking)
+router.route('/:id').get(protect, getClassBookings).post(protect, createBooking).delete(protect, cancelBooking)
 
 module.exports = router;
