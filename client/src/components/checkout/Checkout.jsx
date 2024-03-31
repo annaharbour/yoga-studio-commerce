@@ -17,9 +17,6 @@ const Checkout = () => {
 	const [processingPayment, setProcessingPayment] = useState(false);
 	const [bookClass] = useBookClassMutation();
 
-	const { search } = useLocation();
-	const sp = new URLSearchParams(search);
-	const redirect = sp.get("redirect") || "/success";
 
 	const { state } = useLocation();
 	const { classType, startTime, endTime, price, classId } = state;
@@ -52,14 +49,15 @@ const Checkout = () => {
 					token: token.id, // Send the stripe token ID to the server
 				}).unwrap();
 				dispatch(bookClass({ ...res }));
-				navigate(redirect);
 			} else {
 				throw new Error("Error creating token");
 			}
 		} catch (err) {
-			toast.error(err?.data?.msg || err.message);
+			console.log(err.message)
 		} finally {
 			setProcessingPayment(false);
+			navigate('/schedule');
+			console.log('success')
 		}
 	};
 
